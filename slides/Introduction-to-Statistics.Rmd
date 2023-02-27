@@ -1,0 +1,903 @@
+---
+title: "Introduction to Statistics in R"
+author: "Gerardo Martínez"
+date: "2023-03-01"
+output: bookdown::gitbook
+---
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\newcommand{\P}{\mathrm{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\var}{\mathrm{var}}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+
+# Some words about the workshop
+
+Welcome to this workshop! Thank you for attending! 
+
+The goal of this workshop is to see some basic notions of Probability and Statistics with R. As this is a 4-hour workshop I will not have the time to go in depth into many topics but I selected a handful of them that I feel are basic notions researchers working with data should know.
+
+The workshop will have two parts. In the first part I will go over some essential concepts in Probability theory like a random variable, probability density functions or expected value. As most of you have already taken a course in Probability and/or Statistics, you might be already be familiar with these concepts but I hope that by using R you will gain a better understanding of them.
+
+The second part of the workshop will be about hypothesis testing. With the help of random number simulation we will construct the main notions that are related to building a hypothesis test procedure. We will also review a very commonly used test which is the T test.
+
+I would like to give a disclaimer about what this workshop is not:
+
+* A hardcore workshop about R. In this workshop R will only be a tool and not an end in itself. Additionally, we will use base-R and not packages from the tidyverse.
+
+* A workshop on statistical analysis. I will not cover any linear regression, ANOVA, classification problems, or principal component analysis. Some of these problems will be tackled in Alex Diaz-Papkovich's workshop in a couple of weeks.
+
+That being said, you can open RStudio and let us get to work!
+
+# Basic concepts in probability
+
+## Basic definition
+
+A **random experiment** are experiments whose outcomes cannot be predicted in advance but for which we can make a list of possible outcomes. The set of all possible outcomes is called the *sample space* and is usually denoted by $\Omega$.
+
+**Examples**
+
+1. A toss of a die: $\Omega = \{ 1,2,3,4,5,6\}$.
+
+2. Looking at three DNA positions and checking if after a round of DNA replication they were copied correctly or not. Denoting with C a correct copy and with I an incorrect one, then $\Omega = \{(C,C,C), (C,C,I), (C, I, I), \dots (I,I,I)\}$.
+
+3. Given a mutation rate $\mu$, the number of new mutations after meiosis. $\Omega = \{0,1, 2, \dots\}$
+
+Given a sample space $\Omega$ and a probability $\P$ defined on it, a **random variable** is a (measurable)^[If you are interested, you can check the wikipedia page for [measurable function.](https://en.wikipedia.org/wiki/Measurable_function)] function from $\Omega$ to $\R$ with $\R$ being the real numbers. We usually denote random variables with capital $X$, $Y$, or $Z$.
+
+**Example**. Consider the experiment of looking at one position at the DNA after replication and asking if there has been a mutation or not. Let us denote with S the event of seeing a mutation and with F the event of not seeing one. The sample space is $\Omega = \{ S, F\}$. We can construct the random variable $X$ such that
+\begin{equation}
+X(S) = 1 \quad \text{and} \quad X(F) = 0.   (\#eq:bernoulli)
+\end{equation}
+
+An experiment in which there is one event called *success* and another called *failure* is a **Bernoulli trial** and the random variable defined in the equation \@ref(eq:bernoulli) is a **Bernoulli random variable** or that $X$ has Bernoulli distribution.
+
+## The probability mass function (pmf)
+
+Given a random variable $X$ defined on a finite or countably infinite^[Essentially, something that despite being infinite you could enumerate with the natural numbers. More on this [here](https://en.wikipedia.org/wiki/Countable_set).] state space we will define the **probability mass function (pmf)** and denote it with $p(x)$ as the function such that for a real number $x$
+\begin{equation*}
+p(x) = \P(X = x)
+\end{equation*}
+
+**Example**. Continuing with the example, imagine we know that the probability with which we see a mutation is $p$. Then
+\begin{equation*}
+\P(X = 1) = p, \quad \P(X=0) = 1-p, \quad \text{and} \quad \P(X=x) = 0 \quad \text{for every other }x \in \R
+\end{equation*}
+Then the pmf of $X$ is
+\begin{equation*}
+p(x) = \begin{cases}
+p & \text{if } x = 1 \\
+1-p & \text{if } x = 0 \\
+0 & \text{in other cases}
+\end{cases}
+\end{equation*}
+Given a probability of success $p$, we say that $X$ is a Bernoulli random variable with parameter $p$ or that $X$ has Bernoulli distribution with parameter $p$.
+
+In R we can find use the function $\texttt{dbinom}$ to find the values for a pmf of a Bernoulli distribution. Following the example of the mutation rate, consider $p = 10^{-8}$. The function $\texttt{dbinom}$ will take three parameters
+
+* The value $x$ in which we want to evaluate the pmf.
+
+* The parameter $\texttt{size}$ that for a Bernoulli distribution will be equal to $1$ **always** (more on this in some minutes).
+
+* The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
+
+```{r eval = FALSE}
+# P(X=1)
+dbinom(1, size = 1, prob = 10^{-8})
+```
+
+```{r eval = FALSE}
+# P(X=0)
+dbinom(0, size = 1, prob = 10^{-8})
+```
+
+```{r eval = FALSE}
+# Is that a true 1?
+dbinom(0, size = 1, prob = 10^{-8}) == 1
+```
+
+**Exercise** (Beginner). Check for a handful of real values $x$ other than $0$ and $1$ that the pmf evaluated at $x$ for a random variable with Bernoulli distribution with probability $p = 0.2$ is indeed 0.
+
+**Exercise** (Advanced). Create a grid of values between $-1$ and $1$ and store the results in a vector called $\texttt{x_bernoulli}$. Find the pmf of a random variable with Bernoulli distribution with probability $p = 0.2$ at each of the grid points; store the results in a vector called $\texttt{pmf_bernoulli}$. Plot on the $x$ axis the grid values and on the $y$ axis the pmf.
+
+### Simulating Bernoulli trials
+
+In R we can simulate Bernoulli trials using the function $\texttt{rbinom}$. The function $\texttt{rbinom}$ will take three parameters
+
+* The number of repetitions of the Bernoulli trial.
+
+* The parameter $\texttt{size}$ that for a Bernoulli distribution will be equal to $1$ **always** (more on this in some minutes).
+
+* The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
+
+**Exercise** Throwing a coin takes about 1 second. Throwing it 1000 times takes about 15 minutes. We can easily implement such a thing in R. Considering it is a fair coin, throw the coin 1000 times using R and save the result in a vector called $\texttt{x}$.
+
+## The cumulative distribution function (cdf)
+Sometimes, we will be interested in calculating the probability that a random variable is less or equal than a real number $x$. Given a random variable $X$ we will define its **cumulative distribution function (cdf)** and denote it with $F_X(x)$ as the function such that given a real number $x$,
+\begin{equation*}
+F_X(x) = \P(X \leq x)
+\end{equation*}
+
+**Example**. Let us continue with the example of the random variable with Bernoulli with parameter $p$. Let us find its cdf. 
+
+```{r warning = FALSE, echo = FALSE}
+# We create a grid of points between -1 and 2
+x_bernoulli <- seq(-1, 2, by = 0.1)
+
+# Create one vector for the pmf
+pmf_bernoulli <- x_bernoulli
+
+# Find the values of the pmf
+for(i in 1:length(x_bernoulli)){
+pmf_bernoulli[i] <- dbinom(x_bernoulli[i], 
+                        size = 1,
+                        prob = 0.2)
+}
+
+# Plot the pmf and cdf in one plot
+plot(x = x_bernoulli,
+     y = pmf_bernoulli,
+     col = "brown3",
+     pch = 19,
+     xlab = "x", ylab = "pmf", main = "pmf of a Bernoulli distribution with p = 0.2")
+```
+
+In R we can find use the function $\texttt{pbinom}$ to find the values for a pmf of a Bernoulli distribution. The function $\texttt{pbinom}$ will take three parameters
+
+* The value $x$ in which we want to evaluate the cdf.
+
+* The parameter $\texttt{size}$ that for a Bernoulli distribution will be equal to $1$ **always** (more on this in some minutes).
+
+* The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
+
+Analytically, we can check that
+\begin{equation*}
+F_X(x) = \P(X \leq x) = 0.
+\end{equation*}
+Let us check that in R for $p = 0.2$.
+
+```{r eval = FALSE}
+pbinom(-1, size = 1, prob = 0.2)
+```
+For $x$ such that $0 \leq x < 1$,
+\begin{equation*}
+F_X(x) = \P(X \leq x) = \P(X=0) = 1-p.
+\end{equation*}
+
+```{r eval = FALSE}
+pbinom(c(0,0.5, 0.8), size = 1, prob = 0.2)
+```
+For $x \geq 1$,
+\begin{equation*}
+F_X(x) = \P(X \leq x) = \P(X=0) + \P(X = 1) = (1-p) + p = 1.
+\end{equation*}
+
+```{r eval = FALSE}
+pbinom(1, size = 1, prob = 0.2)
+```
+
+We can plot the pmf and the cdf of a random variable with Bernoulli distribution with probability $p$.
+```{r warning = FALSE, echo = FALSE}
+# We create a grid of points between -1 and 2
+x_bernoulli <- seq(-1, 2, by = 0.1)
+
+# Create two vectors for the pmf and the cdf
+pmf_bernoulli <- x_bernoulli
+cdf_bernoulli <- x_bernoulli
+
+# Find the values of the pmf and cdf and store them
+for(i in 1:length(x_bernoulli)){
+pmf_bernoulli[i] <- dbinom(x_bernoulli[i], 
+                        size = 1,
+                        prob = 0.2)
+
+cdf_bernoulli[i] <- pbinom(x_bernoulli[i], 
+                        size = 1,
+                        prob = 0.2)
+}
+
+# Plot the pmf and cdf in one plot
+par(mfrow=c(1,2))
+plot(x = x_bernoulli,
+     y = pmf_bernoulli,
+     col = "brown3",
+     pch = 19,
+     xlab = "x", ylab = "pmf")
+
+plot(x = x_bernoulli,
+     y = cdf_bernoulli,
+     col = "blue4",
+     pch = 19,
+     xlab = "x", ylab = "cdf")
+
+mtext("Bernoulli distribution with p = 0.2", side = 3, line = - 2, outer = TRUE)
+```
+
+## Examples of discrete random variables: The binomial distribution
+
+Let us repeat a Bernoulli trial $n$ times (for example, toss a coin $n$ times) so that 
+
+1. the probability of success is $p$ and it does not change among successive repetitions of the experiment
+
+2. the outcome of one trial does not depend on the outcome of the rest.
+
+Let us define $X$ to be the number of successes among the $n$ trials. In this case we say $X$ has a **binomial distribution** with parameters $n$ and $p$. The number of successes is a natural between $0$ and $n$. Then, it can be proven that the pmf of a rv with a binomial distribution is
+\begin{equation}
+p_X(x) = \binom{n}{x}p^x(1-p)^{n-x}, \quad \text{for }x \in \{0, 1, 2, \dots, n\}.
+\end{equation}
+
+The Bernoulli distribution is a special case of the binomial distribution: it corresponds to the case $n = 1$.
+
+We can find in R the pmf and the cdf of a binomial distribution using the functions $\texttt{dbinom}$ and $\texttt{pbinom}$, respectively. These functions will take three parameters
+
+* The value $x$ in which we want to evaluate the pmf or cdf.
+
+* The parameter $\texttt{size}$ equal to the number of Bernoulli trials being performed, i.e. $\texttt{size}=n$.
+
+* The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
+
+```{r echo = FALSE}
+# We create a grid of points between 0 and 10
+x_pmf_binomial <- seq(0, 10, by = 1)
+x_cdf_binomial <- seq(0, 10, by = 0.1)
+
+# Create two vectors for the pmf and the cdf
+pmf_binomial <- x_pmf_binomial
+cdf_binomial <- x_cdf_binomial
+
+# Find the values of the pmf and cdf and store them
+for(i in 1:length(x_pmf_binomial)){
+pmf_binomial[i] <- dbinom(x_pmf_binomial[i], 
+                        size = 10,
+                        prob = 0.2)
+}
+
+for(i in 1:length(x_cdf_binomial)){
+  cdf_binomial[i] <- pbinom(x_cdf_binomial[i], 
+                        size = 10,
+                        prob = 0.2)
+}
+
+
+
+# Plot the pmf and cdf in one plot
+par(mfrow=c(1,2))
+plot(x = x_pmf_binomial,
+     y = pmf_binomial,
+     col = "brown3",
+     pch = 19,
+     xlab = "x", ylab = "pmf")
+
+plot(x = x_cdf_binomial,
+     y = cdf_binomial,
+     col = "blue4",
+     pch = 19,
+     xlab = "x", ylab = "cdf")
+
+mtext("Binomial distribution with p = 0.2 and n = 10", side = 3, line = - 2, outer = TRUE)
+```
+
+**Exercise**. According to [this website](https://www150.statcan.gc.ca/n1/pub/82-625-x/2018001/article/54982-eng.htm) 6.6% of Quebec residents who are 12 and older are reported to have diabetes. Let us take a sample of size $n = 100$. Calculate with R the probability that
+
+1. there are exactly 10 individuals with diabetes in the sample,
+
+2. there are 10 individuals or less with diabetes in the sample,
+
+3. more than half of the individuals are diabetic.
+
+### Simulating random values from a binomial distribution
+
+In R we can simulate data whose underlying distribution follows a binomial distribution with the function $\texttt{rbinom}$. The function $\texttt{rbinom}$ will take three parameters:
+
+* The number of sample points.
+
+* The parameter $\texttt{size}$ equal to the number of Bernoulli trials being performed, i.e. $\texttt{size}=n$.
+
+* The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
+
+**Exercise** In 50 towns in Quebec a sample of size 100 was taken and the number of diabetic people was measured. However, the data was lost. Simulate using the function $\texttt{rbinom}$ a possible data set. Use the function $\texttt{table}$ to estimate what was the most common number of diabetic people observed in the 50 Quebec locations.
+
+## Examples of discrete random variables: The Poisson distribution
+
+We say a random variable $X$ has **Poisson distribution** if 
+
+1. $X$ counts the number of events of a given kind in a time interval or length interval (e.g. number of mutations in a chromosome of size $L$ after meiosis),
+
+2. the expected number of events is a parameter $\lambda$ with $\lambda >0$,
+
+3. the ocurrence of one event does not affect the probability that a second event will occur, and
+
+4. two events cannot happen at exactly the same instant.
+
+The pmf of a random variable $X$ with a Poisson distribution has the following shape
+\begin{equation*}
+  p_X(x) = \P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!} \quad \text{for every }x \in \N.
+\end{equation*}
+
+We can find in R the pmf and the cdf of a Poisson distribution using the functions $\texttt{dpois}$ and $\texttt{ppois}$, respectively. These functions will take three parameters
+
+* The value $x$ in which we want to evaluate the pmf or cdf.
+
+* The expected number of events $\lambda$.
+
+```{r echo = FALSE}
+# We create a grid of points between 0 and 10
+x_pmf_poisson <- seq(0, 20, by = 1)
+x_cdf_poisson <- seq(0, 20, by = 0.1)
+
+# Create two vectors for the pmf and the cdf
+pmf_poisson <- x_pmf_poisson
+cdf_poisson <- x_cdf_poisson
+
+# Find the values of the pmf and cdf and store them
+for(i in 1:length(x_pmf_poisson)){
+pmf_poisson[i] <- dpois(x_pmf_poisson[i], 
+                        lambda = 5)
+}
+
+for(i in 1:length(x_cdf_poisson)){
+  cdf_poisson[i] <- ppois(x_cdf_poisson[i], 
+                        lambda = 5)
+}
+
+# Plot the pmf and cdf in one plot
+par(mfrow=c(1,2))
+plot(x = x_pmf_poisson,
+     y = pmf_poisson,
+     col = "brown3",
+     pch = 19,
+     xlab = "x", ylab = "pmf")
+
+plot(x = x_cdf_poisson,
+     y = cdf_poisson,
+     col = "blue4",
+     pch = 19,
+     xlab = "x", ylab = "cdf")
+
+mtext("Poisson distribution with lambda = 5", side = 3, line = - 2, outer = TRUE)
+```
+
+**Exercise**. In the process of genome assembly, sequencers generate random short reads. Then, there are algorithms that assemble the genomes from these short reads. Given a genome of size $G$, a read length of size $L$, a number of reads $N$, we define the coverage $\lambda$ to be $\lambda = \frac{NL}{G}$ and it is the average number of times each nucleotide is sequenced.
+
+Consider $\lambda = 30$ and let us model the number of times a nucleotide is sequenced as a Poisson random variable.
+
+1. Calculate the probability that it is read exactly one time.
+
+2. Calculate the probability that it has been sequenced at least one time. (Hint: Look into the parameter $\texttt{lower.tail}$ by doing $\texttt{?ppois}$ in your R terminal).
+
+## Continuous random variables
+
+An (absolutely)^[Strictly speaking these are *absolutely continuous random variables* but for the sake of simplicity we will call them simply *continuous*. These notions are not equivalent but they are not in the scope of this workshop] continuous random variable $X$ is an RV for which there exists a function $p_X$ that we will call the **probability density function (pdf)** such that the cdf can be written
+\begin{equation*}
+  F_X(x) = \int_{-\infty}^x p_X(t) \, dt,
+\end{equation*}
+As a consequence, it can be proven that that for any real numbers $a,b$ such that $a<b$,
+\begin{equation*}
+  \P(a \leq X \leq b) = F_X(b)-F_X(a) = \int_{a}^{b} p_X(t) \, dt.
+\end{equation*}
+
+### Histogram as a density estimator
+
+Unless we are the ones simulating our data from a well-known probabilistic model, we won't know for sure what is the shape of the underlying probability mass function or density function of the data. There are many ways of estimating these functions but a common one is the **histogram**.
+
+Let us look at this function called $\texttt{unknown_distribution}$. Given a number $n$ it will create $n$ random values from a distribution I have just created.
+```{r}
+unknown_distribution <- function(n){
+  data <- rep(0, n)
+  for (i in 1:n){
+    coin <- rbinom(1, 1, 1/2)
+    if(coin == 0){
+      data[i] <- rnorm(1)
+    } else {
+      data[i] <- rnorm(1, 4)
+    }
+  }
+  return(data)
+}
+```
+
+We don't know what is the density function but we can try to estimate it using the $\texttt{hist}$ function in R. Let us obtain 50 samples from this unkown distribution.
+```{r}
+set.seed(1)
+
+unknown_sample_50 <- unknown_distribution(50)
+```
+
+We can now plot the histogram for this sample.
+```{r eval = FALSE}
+hist(unknown_sample_50,
+     main = "Histogram of sample of size 50",
+     xlab = "")
+```
+As you can see, if we sum the areas of the rectangles in the histogram, this will sum more than $1$. This is because by default the function $\texttt{hist}$ is not exactly a density estimator. For this, the area under the rectangles should add  up to $1$. To change this we can add the parameter $\texttt{freq = FALSE}$ in the $\texttt{hist}$ function.
+```{r eval = FALSE}
+hist(unknown_sample_50,
+     main = "Histogram of sample of size 50",
+     xlab = "",
+     freq = FALSE)
+```
+
+If the size of the sample gets bigger the histogram will converge to the true pmf or pdf of the random variable underlying the data. 
+
+Let us now generate a sample of size $n = 10,000$ and plot again the histogram.
+
+```{r}
+unknown_sample_10000 <- unknown_distribution(10000)
+```
+
+We can add more breaks between the bins by changing the parameter $\texttt{breaks = }$ in the function $\texttt{hist}$. For example, setting $\texttt{breaks = 100}$ we can obtain something like this:
+```{r eval = FALSE}
+hist(unknown_sample_10000,
+     breaks = 100)
+```
+
+
+## Normal distribution
+
+A random variable $X$ has normal distribution of parameters $\mu$ and $\sigma^2$ with $\mu \in \R$ and $\sigma > 0$ if its pdf can be written as
+\begin{equation*}
+  p_X(x) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2} \left( \frac{x-\mu}{\sigma}\right)^2 }
+\end{equation*}
+If $\mu=0$ and $\sigma^2$ we say $X$ follows a **standard normal distribution**.
+
+We can find in R the pdf and the cdf of a normal distribution using the functions $\texttt{dnorm}$ and $\texttt{pnorm}$, respectively. These functions will take three parameters
+
+* The value $x$ in which we want to evaluate the pmf or cdf.
+
+* The parameter $\texttt{mean}$ equal to $\mu$. By default $\texttt{mean} = 0$
+
+* The parameter $\texttt{sd}$ equal to $\sigma$. By default $\texttt{sd} = 1$.
+
+Additionally, we can obtain a sample of size $n$ following a normal distribution with the function $\texttt{rnorm}$.
+
+**Exercise**. The size of a brain in $\text{cm}^3$ can be estimated by a normal distribution with parameters $\mu = 1350$ and $\sigma = 150$.
+
+1. Calculate in R the probability of having a brain between $1200 \text{cm}^3$ and $1500 \text{cm}^3$.
+
+2. A brain was measured in a recently deseased patient and it was found its volume was $1800 \text{cm}^3$. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?
+
+3. Simulate a sample of size 50 of brain sizes. Save the results in a vector called $\texttt{brain_samples}$. Plot a normalized histogram of this sample. Use the following schema to overlay the true density of the sample:
+```{r eval = FALSE}
+# Create a grid of x values
+x_brains_density <- seq(floor(min(brains_samples)), ceiling(max(brains_samples)), by = 1)
+
+# Calculate the density for each of the x values
+y_brains_density <- dnorm(x_brains_density, 
+                          mean = 1350,
+                          sd = 150)
+
+# Overlay histogram with fitted density
+lines(x_brains_density, y_brains_density, col = "red")
+
+```
+
+
+## Mean and variance
+
+Given a random variable $X$ we define the *mean* of $X$ and we denote it with $\E(X)$ as the quantity
+\begin{equation}
+  \E(X) = \begin{cases}
+  \sum_{x} x p_X(x) & \text{if } X \text{ is discrete} \\
+  \int_{-\infty}^{+\infty} x p_X(x) \,dx & \text{if } X \text{ is continuous.}
+  \end{cases}
+\end{equation}
+
+**Examples.**
+
+1. If $X$ has a binomial distribution with parameters $n$ and $p$ then $\E(X) = np$.
+
+2. If $X$ has a Poisson distribution with rate $\lambda$ then $\E(X) = \lambda$.
+
+3. If $X$ has a normal distribution with parameters $\mu$ and $\sigma^2$ then $\E(X) = \mu$.
+
+Given a random variable $X$ we define the **variance** of $X$ and we denote it with $\var(X)$ as the quantity
+\begin{equation}
+  \var(X) = \begin{cases} \sum_{x} (x-\E(X))^2 p_X(x) & \text{if } X \text{ is discrete}  \\
+  \int_{-\infty}^{+\infty} (x-\E(X))^2 p_X(x) \,dx \quad \text{if } X \text{ is continuous.}
+\end{cases}
+\end{equation}
+
+**Examples.**
+
+1. If $X$ has a binomial distribution with parameters $n$ and $p$ then $\var(X) = np(1-p)$.
+
+2. If $X$ has a Poisson distribution with rate $\lambda$ then $\var(X) = \lambda$.
+
+3. If $X$ has a normal distribution with parameters $\mu$ and $\sigma^2$ then $\var(X) = \sigma^2$.
+
+Unless we are the ones simulating data from a well-known probabilistic model we don't know the mean or the variance of a given data set. Hence why we would like to *estimate* these quantities. Given a random sample $X_1, \dots, X_n$ we define the **sample mean** and **sample variance** as
+\begin{equation*}
+  \bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i \quad \text{and} \quad S_n^2 = \frac{1}{n-1} \sum_{i}^n (X_i - \bar{X}_n)^2,
+\end{equation*}
+respectively.
+
+In R, given a vector $\texttt{x}$ we can calculate the sample mean and sample variance using the functions $\texttt{mean}$ and $\texttt{var}$.
+
+**Exercise**. Load the dataset $\texttt{mean-variance.csv}$. The columns of this data set correspond to two data vectors of size $1000$.
+
+1. A [CpG site](https://en.wikipedia.org/wiki/CpG_site) is a region of DNA where a cytosine is followed by a guanine. From a starting point in a linear sequence the length of a sequence until the ocurrence of a CpG site was measured. This can be modeled with a [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) of parameter $p$. The first column of the data set $\texttt{mean-variance.csv}$ gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate $p$. Make a histogram of the dataset.
+
+2. When modelling *count data*, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the first column of $\texttt{mean-variance.csv}$ data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won´t necessarily get *the exact* same number, we will say the mean and variance are equal if the distance between them is less than $0.5$.
+
+## The Law of Large Numbers
+
+The reason why we use the sample mean to estimate the true mean of the underlying distribution of the data is given by the [Law of Large Numbers](https://en.wikipedia.org/wiki/Law_of_large_numbers). In short, under fairly weak hypothesis, it can be proven that the sample mean $\bar{X}_n$ converges to the true mean $\E(X)$ when the sample size $n$ goes to infinity.
+
+Let us illustrate with an example. Let us start by throwing a fair die 10 times and calculate its mean. The distribution of a fair die is follows a [discrete uniform distribution](https://en.wikipedia.org/wiki/Discrete_uniform_distribution). It can be proven that the true mean of this distribution is $3.5$. There is no base function in R to simulate random values coming from these distribution. However, we can easily build one^[This is a modification of the code found [here](https://stats.stackexchange.com/questions/3930/are-there-default-functions-for-discrete-uniform-distributions-in-r)].
+
+```{r}
+rdunif <- function(n, a=1, b=6) {
+  # The function will take three parameters
+  # n: the number of random values to be simulated
+  # a: the minimum value, by default it will be 1
+  # b: the maximum value, by default it will be 6
+  return(sample(a:b,n, replace=T))
+} 
+```
+
+We can now simulate ten tosses of the die and calculate the mean.
+```{r eval = FALSE}
+fair_die <- rdunif(10)
+
+mean(fair_die)
+```
+
+What if we throw it a hundred times?
+
+```{r eval = FALSE}
+fair_die <- c(fair_die, rdunif(90))
+
+mean(fair_die)
+```
+
+And what if we throw it a thousand times?
+
+```{r eval = FALSE}
+fair_die <- c(fair_die, rdunif(900))
+
+mean(fair_die)
+```
+
+We can see the convergence to the mean in the following plot:
+```{r eval = FALSE}
+# We store the total length of the vector
+n <- length(fair_die)
+
+# We create two vectors:
+# sample_mean_fair_die: The value of the sample mean
+#                       up to to the i-th sample element.
+# sample_mean_difference_fair_die: The difference between the sample mean
+#                             and the true mean (3.5) in absolute value
+sample_mean_fair_die <- rep(0, n)
+sample_mean_difference_fair_die <- rep(0, n)
+
+for(i in 1:n){
+  sample_mean_fair_die[i] <- mean(fair_die[1:i])
+  sample_mean_difference_fair_die[i] <- abs(sample_mean_fair_die[i]-3.5)
+}
+
+
+# This will create two plots, one with the value of the sample mean
+# and the other with the difference between the sample mean and the true mean
+
+par(mfrow=c(1,2))
+
+# First plot
+plot(x = 1:n, 
+     y = sample_mean_fair_die, 
+     type = "l", col = "blue",
+     xlab = "Sample size",
+     ylab = "Sample mean")
+
+# This will create a horizontal line at y = 3.5.
+abline(h=3.5, col="red", lty = 2)
+
+# Second plot
+plot(x = 1:n, 
+     y = sample_mean_difference_fair_die, 
+     type = "l", col = "blue",
+     xlab = "Sample size",
+     ylab = "Sample mean minus true mean")
+
+# This will create a horizontal line at y = 0.
+abline(h=0, col="red", lty = 2)
+
+mtext("Convergence of the sample mean", side = 3, line = - 2, outer = TRUE)
+
+```
+
+**Exercise**. Given a random variable $X$ with Poisson distribution of rate $\lambda$, the probability that $X$ is bigger than a certain real number $x$ is
+\begin{equation*}
+  \P(X \geq x) = \sum_{i = \ceil{x}}^{+\infty} \frac{e^{-\lambda} \lambda^i}{i!}.
+\end{equation*}
+We can ask R to give us this probability using $\texttt{ppois}$. However, due  to the Law of Large Numbers, we can also estimate it as follows.
+
+1. Simulate $n = 10,000$ random numbers from a Poisson distribution with any rate you desire.
+
+2. For any real positive number $x$ of your choice, calculate how many  data points are bigger or equal than $x$. Divide that number by the total number of points $n$.
+
+3. Compare what you found in part (2) with the number you get by doing $\texttt{ppois}$.
+
+4. (Optional) Repeat the parts (1)-(3) to estimate the probability that a standard normal distribution is less or equal than $-0.5$.
+
+**Exercise** (Advanced). A consequence of the Law of Large Numbers is that the sample variance $S^2$ also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you would like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.
+
+# Hypothesis testing
+
+## Introductory example
+
+We have been hired to do quality control at a factory that produces dies for a board game in which getting a $6$ is extremely important. We know don't want to ruin the players' experience so if the die is not a fair die we want to discard the die. Given a particular die we construct two hypothesis:
+
+\begin{equation*}
+H_0: \text{The die is fair} \quad \text{and} \quad H_1: \text{The die is not fair}
+\end{equation*}
+
+Given time constraints we have only time to throw the die a hundred times. If the die is fair we expect to see approximately $100 \times \frac{1}{6} \approx 17$ sixes, so we create the following rule: *if the number of 6 is higher than 20, we will discard the die*. 
+
+The company is very environmentally friendly so we don't want to throw unnecessary die. We would take an incorrect decision if the die is fair but we decide to throw it. Given a perfectly good die, we want to estimate how frequently we throw incorrectly these dice.
+
+Let us first simulate 100 tosses of 1000 dice. One way of doing this is simulating $100 \times 1000$ tosses and then puting the result in a matrix.
+
+```{r}
+fair_dice_tosses <- rdunif(100*1000)
+
+# Turn the previous vector into a matrix
+fair_dice_tosses <- matrix(fair_dice_tosses, nrow = 100)
+```
+
+To check this is indeed a fair die we can check it by plotting a histogram of the dataset.
+
+```{r eval = FALSE}
+hist(fair_dice_tosses,
+     main = "",
+     xlab = "Outcome of a fair die toss")
+```
+
+
+Here comes the tricky part. We want for each of die we want to calculate the number of sixes that were observed.
+```{r}
+# Create a vector that will store the result
+fair_die_number_sixes <- rep(0, 1000)
+
+# Record the number of sixes
+for(j in 1:1000){
+  fair_die_number_sixes[j] <- sum(fair_dice_tosses[,j] == 6)
+}
+```
+
+Let us see how this looks by plotting a histogram.
+
+```{r}
+hist(fair_die_number_sixes,
+     main = 'Number of sixes in 100 fair die tosses',
+     xlab = 'Number of sixes',
+     col = "deepskyblue")
+```
+
+We are now ready to estimate the probability of ditching a perfectly good die.
+```{r}
+(sum(fair_die_number_sixes>20))/1000
+```
+
+Maybe our problem is we are being too strict with our rule of decision. Let us change it and let us say that we will throw the die if the number of sixes is higher than 25. Let us recalculate now the probability of throwing good die.
+We are now ready to estimate the probability of ditching a perfectly good die.
+```{r}
+(sum(fair_die_number_sixes>25))/1000
+```
+
+Now sometimes the machine produces dices that are loaded and have a lower probability of landing on a $1$ or $6$ but higher probability of landing on a $5$ or a $2$. We would like our rule to also make us throw those dice away. Let us estimate now what is the probability of not throwing away those dice.
+
+First let us build a function in R to throw loaded dice.
+```{r eval = FALSE}
+loaded_die_random <- function(n){
+  probs <- c(2/18, 4/18, 3/18, 3/18, 4/18, 2/18)
+  return(sample(1:6, size = n, replace = TRUE, prob = probs))
+}
+```
+
+Let us repeat what we did for the fair die but now for the loaded one.
+
+```{r eval = FALSE}
+loaded_dice_tosses <- loaded_die_random(100*1000)
+
+# Turn the previous vector into a matrix
+loaded_dice_tosses <- matrix(loaded_dice_tosses, nrow = 100)
+
+hist(loaded_dice_tosses,
+     main = "",
+     xlab = "Outcome of a loaded die toss")
+```
+Let us check now how the distribution of sixes look. 
+```{r eval = FALSE}
+# Create a vector that will store the result
+loaded_die_number_sixes <- rep(0, 1000)
+
+# Record the number of sixes
+for(j in 1:1000){
+  loaded_die_number_sixes[j] <- sum(loaded_dice_tosses[,j] == 6)
+}
+
+hist(loaded_die_number_sixes,
+     main = 'Number of sixes in 100 loaded die tosses',
+     xlab = 'Number of sixes',
+     col = "darkgoldenrod2")
+```
+To check how different the distributions are we can overlap the histograms with the following code^[The code I present here is a modified version of the code found [here](https://www.dataanalytics.org.uk/plot-two-overlapping-histograms-on-one-chart-in-r/). The linked website has an in-depth explanation on histograms using base-R.]:
+
+```{r eval = FALSE}
+c1 <- rgb(0, 191, 255, 80, max = 255)
+c2 <- rgb(238, 173, 14, 80, max = 255)
+
+#c1 <- rgb(173,216,230,max = 255, alpha = 80, names = "lt.blue")
+#c2 <- rgb(255,192,203, max = 255, alpha = 80, names = "lt.pink")
+
+min_hist <- min(c(fair_die_number_sixes,loaded_die_number_sixes)) - 0.001 # Set the minimum for the breakpoints
+max_hist <- max(c(fair_die_number_sixes,loaded_die_number_sixes)) # Set the maximum for the breakpoints
+ax <- pretty(min_hist:max_hist, n = 12) # Make a neat vector for the breakpoints
+
+hgA <- hist(fair_die_number_sixes, 
+            breaks = ax, 
+            plot = FALSE) # Save first histogram data
+
+hgB <- hist(loaded_die_number_sixes, breaks = ax, plot = FALSE) # Save 2nd histogram data
+
+plot(hgA, col = c1, main = "", xlab = "Number of sixes") # Plot 1st histogram using a transparent color
+plot(hgB, col = c2, add = TRUE) # Add 2nd histogram using different color
+
+abline(v = 20, col = "red", lwd = 2)
+abline(v = 25, col = "red", lwd = 2)
+```
+We can now calculate the probability of not throwing the loaded dice away.
+```{r eval = FALSE}
+(sum(fair_die_number_sixes<=25))/1000
+```
+
+## Hypothesis testing
+
+Given a random sample $X_1, \dots, X_n$ a hypothesis is a statement about one aspect of the underlying distribution of the data. 
+
+We will test two hypothesis, one is the null hypothesis and we denote it with $H_0$ and the other is the *alternate hypothesis* and we denote it with $H_1$. In our previous example we had defined
+
+\begin{equation*}
+H_0: \text{The die is fair} \quad \text{and} \quad H_1: \text{The die is not fair}
+\end{equation*}
+
+A **hypothesis test procedure** or **hypothesis test** is a rule that specifies for which sample values $H_0$ is rejected for which sample values $H_0$ is not rejected. The set of samples for which we will reject the null hypothesis is called the **rejection or critical region**.
+
+In our example we had checked two rules
+
+1. We will reject the $H_0$ if the number of sixes is higher than $20$.
+
+2. We will reject the $H_0$ if the number of sixes is higher than $25$.
+
+We can see that our decisions all depended on a function of our sample: in the example we had used the number of sixes. This will always be the case, the critical region will be dependent on a function of the sample that we will call the **test statistic**. Hence, in our example, the test statistic was 'number of sixes in a hundred tosses of a die'.
+
+As we have seen in the example of the dice, there are two sources of error while doing hypothesis testing: 
+
+1. The first type of error occurs when we reject the null hypothesis but the null hypothesis was actually true: this is called the **type 1 error**. In the example, we commited a type 1 error when we discarded fair dice. 
+
+2. The second type of error occurs when we fail to reject the null hypothesis but the null hypothesis was actually false: this is called the **type 2 error**. In the example, we committed a type 2 error when we did not discard loaded dice.
+
+We can summarize the distinct combinations of rejection/not rejection of the null hypothesis vs the actual truth in the following table:
+
+|                   | Reject $H_0$     | Not reject $H_0$   |
+|------------------:|:----------------:|:------------------:|
+| $H_0$ **is true** | Type 1 error     | Correct decision   |
+| $H_1$ **is true** | Correct decision | Type 2 error       |
+
+We saw that if we control to minimize the type 1 error, the type 2 error ended up being extremely high. Unfortunately, when doing hypothesis testing we won't be able to minimize both errors at the same time. For this reason, we will fix a type 1 error and find the rejection region that minimizes the type 2 error. We will denote with $\alpha$ the type 1 error and with $\beta$ the type 2 error. The number $\alpha$ is called the *significance level* and the number $1-\beta$ (equal to the probability of obtaining a *true positive*) is called the *power of the test*.
+
+## Testing for the mean of a population: Simulating the probability
+
+In the dataset $\texttt{data_poisson.csv}$ we have the number of times $1000$ nucleotides were read during sequencing. Let us first load the data and store it in a vector called $\texttt{data_poisson}$.
+
+```{r eval = FALSE}
+# Let us load the data
+...
+```
+
+We believe that despite paying for 50x coverage, we are not getting that coverage. We will admit the data follows a Poisson distribution of rate $\lambda$. We propose the hypotheses 
+\begin{equation*}
+H_0: \lambda = 50 \quad \text{and} \quad H_1: \lambda \neq 50,
+\end{equation*}
+
+Let us fix a significance level of $\lambda = 0.05$. We know that due to the Law of Large Numbers $\bar{X}_n$ is a *good* estimator of the expectation $\E(X)$. So are going to construct the following rejection rule:
+\begin{equation*}
+\text{If } |\bar{X}_{1000} - 50| > k \text{ for some k, then we will reject the null hypothesis}
+\end{equation*}
+We want to find the real value $k$ for which
+\begin{equation*}
+\P(|\bar{X}_{1000} - 50| > k | H_0 \text{ is true}) \leq 0.05.
+\end{equation*}
+There is no built-in function to estimate this probability. For this reason we will estimate it through simulations.
+
+First, we will simulate $n = 10,000$ samples of size $1000$ coming from a Poisson distribution. We want to estimate a probability *given that $H_0$ is true*. For this reason we will simulate the Poisson random values with rate $\lambda = 50$.
+
+```{r eval = FALSE}
+# Let us simulate 10,000 samples of size 1000 from a Poisson of rate 50
+poisson_samples <- rpois(10000*1000, lambda = 50)
+
+# Let us turn this into a matrix having the samples as columns
+poisson_samples <- matrix(poisson_samples, nrow = 1000)
+```
+
+For each of the datasets we must apply the test statistic which is $|\bar{X}_{1000} - 50|$. 
+
+```{r eval = FALSE}
+# We create an empty vector
+test_poisson <- rep(0, 10000)
+
+for (j in 1:10000){
+  test_poisson[j] <- abs(mean(poisson_samples[,j])-50)
+}
+```
+
+Let us plot a histogram of the vector $\texttt{test_poisson}$.
+```{r eval = FALSE}
+# Plot a histogram of test_poisson
+...
+```
+We have now to find $k$ such that $\P(|\bar{X}_{1000} - 50| > k) \leq 0.05$. This equivalent to say we want $k$ such that^[This follows from the probability of the complement. Remember that if $\P(A^c) = 1-\P(A)$.]
+\begin{equation*}
+  \P(|\bar{X}_{1000} - 50| \leq k) \geq 1 - 0.05 = 0.95
+\end{equation*}
+So we want the the value $k$ such that the cdf evaluated at $k$ is as large as $0.95$. We say in this case that $k$ is the 95th quantile. Fortunately for us, in R we can use the function $\texttt{quantile}$. The function $\texttt{quantile}$ will take two parameter
+
+* A vector $x$ which we want to find a quantile.
+* A parameter $\texttt{probs}$ equal to the probability that we want to acumulate.
+
+```{r eval = FALSE}
+quantile(x, .95)
+```
+
+Now we are ready to look at our original data and see if we would reject or not the null hypothesis. Let us find what is the test statistic in our case.
+```{r eval = FALSE}
+abs(mean(data_poisson)-50)
+```
+
+## Testing for the mean of a population: Obtaining an analytical expression for the probability
+
+In the dataset $\texttt{data_normal.csv}$ we have 1000 values coming from a normal distribution. We know the data comes from a normal distribution with variance equal to $1$ but we are not fully sure if the expectation is equal to $0$. We propose the hypotheses
+\begin{equation*}
+H_0: \mu = 0 \quad \text{and} \quad H_1: \mu \neq 0.
+\end{equation*}
+With Poisson random values it was definitely cumbersome to find the distribution of test statistic we had used. Luckily for us, with normal random values everything is *a lot* simpler. 
+
+If $X_1, \dots X_n$ are normally distributed with mean $\mu$ and variance $\sigma^2$ then the distribution of
+\begin{equation*}
+T = \frac{\bar{X}_n - \mu}{\frac{1}{\sqrt{n}} S_n}, \quad \text{where} \quad S_n = \sqrt{S^2_n}
+\end{equation*}
+follows a well-known distribution called a Student's $t$-distribution. The parameter of a $t$-distribution is called its *degrees of freedom* and it is a natural number $n$. The test statistic $T$ previously defined follows a $t$-distribution with $n-1$ degrees of freedom with $n$ being the sample size. In R we have the usual functions for the pdf, cdf and random value generation and those are $\texttt{dt}$, $\texttt{pt}$, and $\texttt{rt}$, respectively.
+
+In this case, we will construct the following rejection region:
+\begin{equation*}
+\text{If } |T| > k \text{ for some k, then we will reject the null hypothesis.}
+\end{equation*}
+We want to find the real value $k$ for which
+\begin{equation*}
+\P(|T| > k | H_0 \text{ is true}) \leq 0.05.
+\end{equation*}
+It can be proven that this is equivalent to finding $k'$ such that
+\begin{equation*}
+\P(T \leq k' | H_0 \text{ is true}) \leq \frac{0.05}{2} = 0.0025.
+\end{equation*}
+
+In R we can find such value using the function $\texttt{qt}$. The function will take two parameters
+
+* The probability $p$ for which we want to find $x$ such that $\P(X \leq x) = p$.
+
+* The degrees of freedom $n$.
+
+We can calculate then the real number $k'$. In this case the degrees of freedom are $1000-1 = 999$
+```{r eval = FALSE}
+  qt(0.025, 999)
+```
+
+We can now go back to our data and check if we will reject the null hypothesis. Fortunately for us, there is a function called $\texttt{t.test}$ that does everything for us.
+```{r eval = FALSE}
+t.test(x = data_normal)
+```
+
