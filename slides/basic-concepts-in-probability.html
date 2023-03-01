@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Basic concepts in probability | Introduction to Statistics in R</title>
+  <meta name="description" content="2 Basic concepts in probability | Introduction to Statistics in R" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Basic concepts in probability | Introduction to Statistics in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Basic concepts in probability | Introduction to Statistics in R" />
+  
+  
+  
+
+<meta name="author" content="Gerardo Martínez" />
+
+
+<meta name="date" content="2023-03-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="some-words-about-the-workshop.html"/>
+<link rel="next" href="hypothesis-testing.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="some-words-about-the-workshop.html"><a href="some-words-about-the-workshop.html"><i class="fa fa-check"></i><b>1</b> Some words about the workshop</a></li>
+<li class="chapter" data-level="2" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html"><i class="fa fa-check"></i><b>2</b> Basic concepts in probability</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#basic-definition"><i class="fa fa-check"></i><b>2.1</b> Basic definition</a></li>
+<li class="chapter" data-level="2.2" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#the-probability-mass-function-pmf"><i class="fa fa-check"></i><b>2.2</b> The probability mass function (pmf)</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#simulating-bernoulli-trials"><i class="fa fa-check"></i><b>2.2.1</b> Simulating Bernoulli trials</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#the-cumulative-distribution-function-cdf"><i class="fa fa-check"></i><b>2.3</b> The cumulative distribution function (cdf)</a></li>
+<li class="chapter" data-level="2.4" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#examples-of-discrete-random-variables-the-binomial-distribution"><i class="fa fa-check"></i><b>2.4</b> Examples of discrete random variables: The binomial distribution</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#simulating-random-values-from-a-binomial-distribution"><i class="fa fa-check"></i><b>2.4.1</b> Simulating random values from a binomial distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#examples-of-discrete-random-variables-the-poisson-distribution"><i class="fa fa-check"></i><b>2.5</b> Examples of discrete random variables: The Poisson distribution</a></li>
+<li class="chapter" data-level="2.6" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#continuous-random-variables"><i class="fa fa-check"></i><b>2.6</b> Continuous random variables</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#histogram-as-a-density-estimator"><i class="fa fa-check"></i><b>2.6.1</b> Histogram as a density estimator</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#normal-distribution"><i class="fa fa-check"></i><b>2.7</b> Normal distribution</a></li>
+<li class="chapter" data-level="2.8" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#mean-and-variance"><i class="fa fa-check"></i><b>2.8</b> Mean and variance</a></li>
+<li class="chapter" data-level="2.9" data-path="basic-concepts-in-probability.html"><a href="basic-concepts-in-probability.html#the-law-of-large-numbers"><i class="fa fa-check"></i><b>2.9</b> The Law of Large Numbers</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html"><i class="fa fa-check"></i><b>3</b> Hypothesis testing</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#introductory-example"><i class="fa fa-check"></i><b>3.1</b> Introductory example</a></li>
+<li class="chapter" data-level="3.2" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#hypothesis-testing-1"><i class="fa fa-check"></i><b>3.2</b> Hypothesis testing</a></li>
+<li class="chapter" data-level="3.3" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#testing-for-the-mean-of-a-population-simulating-the-probability"><i class="fa fa-check"></i><b>3.3</b> Testing for the mean of a population: Simulating the probability</a></li>
+<li class="chapter" data-level="3.4" data-path="hypothesis-testing.html"><a href="hypothesis-testing.html#testing-for-the-mean-of-a-population-obtaining-an-analytical-expression-for-the-probability"><i class="fa fa-check"></i><b>3.4</b> Testing for the mean of a population: Obtaining an analytical expression for the probability</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Introduction to Statistics in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="basic-concepts-in-probability" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Basic concepts in probability<a href="basic-concepts-in-probability.html#basic-concepts-in-probability" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="basic-definition" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Basic definition<a href="basic-concepts-in-probability.html#basic-definition" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A <strong>random experiment</strong> are experiments whose outcomes cannot be predicted in advance but for which we can make a list of possible outcomes. The set of all possible outcomes is called the <em>sample space</em> and is usually denoted by <span class="math inline">\(\Omega\)</span>.</p>
+<p><strong>Examples</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>A toss of a die: <span class="math inline">\(\Omega = \{ 1,2,3,4,5,6\}\)</span>.</p></li>
+<li><p>Looking at three DNA positions and checking if after a round of DNA replication they were copied correctly or not. Denoting with C a correct copy and with I an incorrect one, then <span class="math inline">\(\Omega = \{(C,C,C), (C,C,I), (C, I, I), \dots (I,I,I)\}\)</span>.</p></li>
+<li><p>Given a mutation rate <span class="math inline">\(\mu\)</span>, the number of new mutations after meiosis. <span class="math inline">\(\Omega = \{0,1, 2, \dots\}\)</span></p></li>
+</ol>
+<p>Given a sample space <span class="math inline">\(\Omega\)</span> and a probability <span class="math inline">\(\mathrm{P}\)</span> defined on it, a <strong>random variable</strong> is a (measurable)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> function from <span class="math inline">\(\Omega\)</span> to <span class="math inline">\(\mathbb{R}\)</span> with <span class="math inline">\(\mathbb{R}\)</span> being the real numbers. We usually denote random variables with capital <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, or <span class="math inline">\(Z\)</span>.</p>
+<p><strong>Example</strong>. Consider the experiment of looking at one position at the DNA after replication and asking if there has been a mutation or not. Let us denote with S the event of seeing a mutation and with F the event of not seeing one. The sample space is <span class="math inline">\(\Omega = \{ S, F\}\)</span>. We can construct the random variable <span class="math inline">\(X\)</span> such that
+<span class="math display" id="eq:bernoulli">\[\begin{equation}
+X(S) = 1 \quad \text{and} \quad X(F) = 0.   \tag{2.1}
+\end{equation}\]</span></p>
+<p>An experiment in which there is one event called <em>success</em> and another called <em>failure</em> is a <strong>Bernoulli trial</strong> and the random variable defined in the equation <a href="basic-concepts-in-probability.html#eq:bernoulli">(2.1)</a> is a <strong>Bernoulli random variable</strong> or that <span class="math inline">\(X\)</span> has Bernoulli distribution.</p>
+</div>
+<div id="the-probability-mass-function-pmf" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> The probability mass function (pmf)<a href="basic-concepts-in-probability.html#the-probability-mass-function-pmf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Given a random variable <span class="math inline">\(X\)</span> defined on a finite or countably infinite<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> state space we will define the <strong>probability mass function (pmf)</strong> and denote it with <span class="math inline">\(p(x)\)</span> as the function such that for a real number <span class="math inline">\(x\)</span>
+<span class="math display">\[\begin{equation*}
+p(x) = \mathrm{P}(X = x)
+\end{equation*}\]</span></p>
+<p><strong>Example</strong>. Continuing with the example, imagine we know that the probability with which we see a mutation is <span class="math inline">\(p\)</span>. Then
+<span class="math display">\[\begin{equation*}
+\mathrm{P}(X = 1) = p, \quad \mathrm{P}(X=0) = 1-p, \quad \text{and} \quad \mathrm{P}(X=x) = 0 \quad \text{for every other }x \in \mathbb{R}
+\end{equation*}\]</span>
+Then the pmf of <span class="math inline">\(X\)</span> is
+<span class="math display">\[\begin{equation*}
+p(x) = \begin{cases}
+p &amp; \text{if } x = 1 \\
+1-p &amp; \text{if } x = 0 \\
+0 &amp; \text{in other cases}
+\end{cases}
+\end{equation*}\]</span>
+Given a probability of success <span class="math inline">\(p\)</span>, we say that <span class="math inline">\(X\)</span> is a Bernoulli random variable with parameter <span class="math inline">\(p\)</span> or that <span class="math inline">\(X\)</span> has Bernoulli distribution with parameter <span class="math inline">\(p\)</span>.</p>
+<p>In R we can find use the function <span class="math inline">\(\texttt{dbinom}\)</span> to find the values for a pmf of a Bernoulli distribution. Following the example of the mutation rate, consider <span class="math inline">\(p = 10^{-8}\)</span>. The function <span class="math inline">\(\texttt{dbinom}\)</span> will take three parameters</p>
+<ul>
+<li><p>The value <span class="math inline">\(x\)</span> in which we want to evaluate the pmf.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{size}\)</span> that for a Bernoulli distribution will be equal to <span class="math inline">\(1\)</span> <strong>always</strong> (more on this in some minutes).</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{prob}\)</span> equal to the probability of a success, that is <span class="math inline">\(\texttt{prob} = p\)</span>.</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="basic-concepts-in-probability.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># P(X=1)</span></span>
+<span id="cb1-2"><a href="basic-concepts-in-probability.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="dv">10</span><span class="sc">^</span>{<span class="sc">-</span><span class="dv">8</span>})</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="basic-concepts-in-probability.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># P(X=0)</span></span>
+<span id="cb2-2"><a href="basic-concepts-in-probability.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">0</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="dv">10</span><span class="sc">^</span>{<span class="sc">-</span><span class="dv">8</span>})</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="basic-concepts-in-probability.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Is that a true 1?</span></span>
+<span id="cb3-2"><a href="basic-concepts-in-probability.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">0</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="dv">10</span><span class="sc">^</span>{<span class="sc">-</span><span class="dv">8</span>}) <span class="sc">==</span> <span class="dv">1</span></span></code></pre></div>
+<p><strong>Exercise</strong> (Beginner). Check for a handful of real values <span class="math inline">\(x\)</span> other than <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> that the pmf evaluated at <span class="math inline">\(x\)</span> for a random variable with Bernoulli distribution with probability <span class="math inline">\(p = 0.2\)</span> is indeed 0.</p>
+<p><strong>Exercise</strong> (Advanced). Create a grid of values between <span class="math inline">\(-1\)</span> and <span class="math inline">\(1\)</span> and store the results in a vector called <span class="math inline">\(\texttt{x_bernoulli}\)</span>. Find the pmf of a random variable with Bernoulli distribution with probability <span class="math inline">\(p = 0.2\)</span> at each of the grid points; store the results in a vector called <span class="math inline">\(\texttt{pmf_bernoulli}\)</span>. Plot on the <span class="math inline">\(x\)</span> axis the grid values and on the <span class="math inline">\(y\)</span> axis the pmf.</p>
+<div id="simulating-bernoulli-trials" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Simulating Bernoulli trials<a href="basic-concepts-in-probability.html#simulating-bernoulli-trials" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In R we can simulate Bernoulli trials using the function <span class="math inline">\(\texttt{rbinom}\)</span>. The function <span class="math inline">\(\texttt{rbinom}\)</span> will take three parameters</p>
+<ul>
+<li><p>The number of repetitions of the Bernoulli trial.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{size}\)</span> that for a Bernoulli distribution will be equal to <span class="math inline">\(1\)</span> <strong>always</strong> (more on this in some minutes).</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{prob}\)</span> equal to the probability of a success, that is <span class="math inline">\(\texttt{prob} = p\)</span>.</p></li>
+</ul>
+<p><strong>Exercise</strong> Throwing a coin takes about 1 second. Throwing it 1000 times takes about 15 minutes. We can easily implement such a thing in R. Considering it is a fair coin, throw the coin 1000 times using R and save the result in a vector called <span class="math inline">\(\texttt{x}\)</span>.</p>
+</div>
+</div>
+<div id="the-cumulative-distribution-function-cdf" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> The cumulative distribution function (cdf)<a href="basic-concepts-in-probability.html#the-cumulative-distribution-function-cdf" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Sometimes, we will be interested in calculating the probability that a random variable is less or equal than a real number <span class="math inline">\(x\)</span>. Given a random variable <span class="math inline">\(X\)</span> we will define its <strong>cumulative distribution function (cdf)</strong> and denote it with <span class="math inline">\(F_X(x)\)</span> as the function such that given a real number <span class="math inline">\(x\)</span>,
+<span class="math display">\[\begin{equation*}
+F_X(x) = \mathrm{P}(X \leq x)
+\end{equation*}\]</span></p>
+<p><strong>Example</strong>. Let us continue with the example of the random variable with Bernoulli with parameter <span class="math inline">\(p\)</span>. Let us find its cdf.</p>
+<p><img src="Introduction-to-Statistics_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>In R we can find use the function <span class="math inline">\(\texttt{pbinom}\)</span> to find the values for a pmf of a Bernoulli distribution. The function <span class="math inline">\(\texttt{pbinom}\)</span> will take three parameters</p>
+<ul>
+<li><p>The value <span class="math inline">\(x\)</span> in which we want to evaluate the cdf.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{size}\)</span> that for a Bernoulli distribution will be equal to <span class="math inline">\(1\)</span> <strong>always</strong> (more on this in some minutes).</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{prob}\)</span> equal to the probability of a success, that is <span class="math inline">\(\texttt{prob} = p\)</span>.</p></li>
+</ul>
+<p>Analytically, we can check that
+<span class="math display">\[\begin{equation*}
+F_X(x) = \mathrm{P}(X \leq x) = 0.
+\end{equation*}\]</span>
+Let us check that in R for <span class="math inline">\(p = 0.2\)</span>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="basic-concepts-in-probability.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p>For <span class="math inline">\(x\)</span> such that <span class="math inline">\(0 \leq x &lt; 1\)</span>,
+<span class="math display">\[\begin{equation*}
+F_X(x) = \mathrm{P}(X \leq x) = \mathrm{P}(X=0) = 1-p.
+\end{equation*}\]</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="basic-concepts-in-probability.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>, <span class="fl">0.8</span>), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p>For <span class="math inline">\(x \geq 1\)</span>,
+<span class="math display">\[\begin{equation*}
+F_X(x) = \mathrm{P}(X \leq x) = \mathrm{P}(X=0) + \mathrm{P}(X = 1) = (1-p) + p = 1.
+\end{equation*}\]</span></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="basic-concepts-in-probability.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.2</span>)</span></code></pre></div>
+<p>We can plot the pmf and the cdf of a random variable with Bernoulli distribution with probability <span class="math inline">\(p\)</span>.
+<img src="Introduction-to-Statistics_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="examples-of-discrete-random-variables-the-binomial-distribution" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Examples of discrete random variables: The binomial distribution<a href="basic-concepts-in-probability.html#examples-of-discrete-random-variables-the-binomial-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Let us repeat a Bernoulli trial <span class="math inline">\(n\)</span> times (for example, toss a coin <span class="math inline">\(n\)</span> times) so that</p>
+<ol style="list-style-type: decimal">
+<li><p>the probability of success is <span class="math inline">\(p\)</span> and it does not change among successive repetitions of the experiment</p></li>
+<li><p>the outcome of one trial does not depend on the outcome of the rest.</p></li>
+</ol>
+<p>Let us define <span class="math inline">\(X\)</span> to be the number of successes among the <span class="math inline">\(n\)</span> trials. In this case we say <span class="math inline">\(X\)</span> has a <strong>binomial distribution</strong> with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span>. The number of successes is a natural between <span class="math inline">\(0\)</span> and <span class="math inline">\(n\)</span>. Then, it can be proven that the pmf of a rv with a binomial distribution is
+<span class="math display">\[\begin{equation}
+p_X(x) = \binom{n}{x}p^x(1-p)^{n-x}, \quad \text{for }x \in \{0, 1, 2, \dots, n\}.
+\end{equation}\]</span></p>
+<p>The Bernoulli distribution is a special case of the binomial distribution: it corresponds to the case <span class="math inline">\(n = 1\)</span>.</p>
+<p>We can find in R the pmf and the cdf of a binomial distribution using the functions <span class="math inline">\(\texttt{dbinom}\)</span> and <span class="math inline">\(\texttt{pbinom}\)</span>, respectively. These functions will take three parameters</p>
+<ul>
+<li><p>The value <span class="math inline">\(x\)</span> in which we want to evaluate the pmf or cdf.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{size}\)</span> equal to the number of Bernoulli trials being performed, i.e. <span class="math inline">\(\texttt{size}=n\)</span>.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{prob}\)</span> equal to the probability of a success, that is <span class="math inline">\(\texttt{prob} = p\)</span>.</p></li>
+</ul>
+<p><img src="Introduction-to-Statistics_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><strong>Exercise</strong>. According to <a href="https://www150.statcan.gc.ca/n1/pub/82-625-x/2018001/article/54982-eng.htm">this website</a> 6.6% of Quebec residents who are 12 and older are reported to have diabetes. Let us take a sample of size <span class="math inline">\(n = 100\)</span>. Calculate with R the probability that</p>
+<ol style="list-style-type: decimal">
+<li><p>there are exactly 10 individuals with diabetes in the sample,</p></li>
+<li><p>there are 10 individuals or less with diabetes in the sample,</p></li>
+<li><p>more than half of the individuals are diabetic.</p></li>
+</ol>
+<div id="simulating-random-values-from-a-binomial-distribution" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> Simulating random values from a binomial distribution<a href="basic-concepts-in-probability.html#simulating-random-values-from-a-binomial-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In R we can simulate data whose underlying distribution follows a binomial distribution with the function <span class="math inline">\(\texttt{rbinom}\)</span>. The function <span class="math inline">\(\texttt{rbinom}\)</span> will take three parameters:</p>
+<ul>
+<li><p>The number of sample points.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{size}\)</span> equal to the number of Bernoulli trials being performed, i.e. <span class="math inline">\(\texttt{size}=n\)</span>.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{prob}\)</span> equal to the probability of a success, that is <span class="math inline">\(\texttt{prob} = p\)</span>.</p></li>
+</ul>
+<p><strong>Exercise</strong> In 50 towns in Quebec a sample of size 100 was taken and the number of diabetic people was measured. However, the data was lost. Simulate using the function <span class="math inline">\(\texttt{rbinom}\)</span> a possible data set. Use the function <span class="math inline">\(\texttt{table}\)</span> to estimate what was the most common number of diabetic people observed in the 50 Quebec locations.</p>
+</div>
+</div>
+<div id="examples-of-discrete-random-variables-the-poisson-distribution" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Examples of discrete random variables: The Poisson distribution<a href="basic-concepts-in-probability.html#examples-of-discrete-random-variables-the-poisson-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We say a random variable <span class="math inline">\(X\)</span> has <strong>Poisson distribution</strong> if</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(X\)</span> counts the number of events of a given kind in a time interval or length interval (e.g. number of mutations in a chromosome of size <span class="math inline">\(L\)</span> after meiosis),</p></li>
+<li><p>the expected number of events is a parameter <span class="math inline">\(\lambda\)</span> with <span class="math inline">\(\lambda &gt;0\)</span>,</p></li>
+<li><p>the ocurrence of one event does not affect the probability that a second event will occur, and</p></li>
+<li><p>two events cannot happen at exactly the same instant.</p></li>
+</ol>
+<p>The pmf of a random variable <span class="math inline">\(X\)</span> with a Poisson distribution has the following shape
+<span class="math display">\[\begin{equation*}
+  p_X(x) = \mathrm{P}(X = x) = \frac{e^{-\lambda} \lambda^x}{x!} \quad \text{for every }x \in \mathbb{N}.
+\end{equation*}\]</span></p>
+<p>We can find in R the pmf and the cdf of a Poisson distribution using the functions <span class="math inline">\(\texttt{dpois}\)</span> and <span class="math inline">\(\texttt{ppois}\)</span>, respectively. These functions will take three parameters</p>
+<ul>
+<li><p>The value <span class="math inline">\(x\)</span> in which we want to evaluate the pmf or cdf.</p></li>
+<li><p>The expected number of events <span class="math inline">\(\lambda\)</span>.</p></li>
+</ul>
+<p><img src="Introduction-to-Statistics_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><strong>Exercise</strong>. In the process of genome assembly, sequencers generate random short reads. Then, there are algorithms that assemble the genomes from these short reads. Given a genome of size <span class="math inline">\(G\)</span>, a read length of size <span class="math inline">\(L\)</span>, a number of reads <span class="math inline">\(N\)</span>, we define the coverage <span class="math inline">\(\lambda\)</span> to be <span class="math inline">\(\lambda = \frac{NL}{G}\)</span> and it is the average number of times each nucleotide is sequenced.</p>
+<p>Consider <span class="math inline">\(\lambda = 30\)</span> and let us model the number of times a nucleotide is sequenced as a Poisson random variable.</p>
+<ol style="list-style-type: decimal">
+<li><p>Calculate the probability that it is read exactly one time.</p></li>
+<li><p>Calculate the probability that it has been sequenced at least one time. (Hint: Look into the parameter <span class="math inline">\(\texttt{lower.tail}\)</span> by doing <span class="math inline">\(\texttt{?ppois}\)</span> in your R terminal).</p></li>
+</ol>
+</div>
+<div id="continuous-random-variables" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> Continuous random variables<a href="basic-concepts-in-probability.html#continuous-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>An (absolutely)<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> continuous random variable <span class="math inline">\(X\)</span> is an RV for which there exists a function <span class="math inline">\(p_X\)</span> that we will call the <strong>probability density function (pdf)</strong> such that the cdf can be written
+<span class="math display">\[\begin{equation*}
+  F_X(x) = \int_{-\infty}^x p_X(t) \, dt,
+\end{equation*}\]</span>
+As a consequence, it can be proven that that for any real numbers <span class="math inline">\(a,b\)</span> such that <span class="math inline">\(a&lt;b\)</span>,
+<span class="math display">\[\begin{equation*}
+  \mathrm{P}(a \leq X \leq b) = F_X(b)-F_X(a) = \int_{a}^{b} p_X(t) \, dt.
+\end{equation*}\]</span></p>
+<div id="histogram-as-a-density-estimator" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> Histogram as a density estimator<a href="basic-concepts-in-probability.html#histogram-as-a-density-estimator" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Unless we are the ones simulating our data from a well-known probabilistic model, we won’t know for sure what is the shape of the underlying probability mass function or density function of the data. There are many ways of estimating these functions but a common one is the <strong>histogram</strong>.</p>
+<p>Let us look at this function called <span class="math inline">\(\texttt{unknown_distribution}\)</span>. Given a number <span class="math inline">\(n\)</span> it will create <span class="math inline">\(n\)</span> random values from a distribution I have just created.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="basic-concepts-in-probability.html#cb7-1" aria-hidden="true" tabindex="-1"></a>unknown_distribution <span class="ot">&lt;-</span> <span class="cf">function</span>(n){</span>
+<span id="cb7-2"><a href="basic-concepts-in-probability.html#cb7-2" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)</span>
+<span id="cb7-3"><a href="basic-concepts-in-probability.html#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb7-4"><a href="basic-concepts-in-probability.html#cb7-4" aria-hidden="true" tabindex="-1"></a>    coin <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb7-5"><a href="basic-concepts-in-probability.html#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(coin <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb7-6"><a href="basic-concepts-in-probability.html#cb7-6" aria-hidden="true" tabindex="-1"></a>      data[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb7-7"><a href="basic-concepts-in-probability.html#cb7-7" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb7-8"><a href="basic-concepts-in-probability.html#cb7-8" aria-hidden="true" tabindex="-1"></a>      data[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">4</span>)</span>
+<span id="cb7-9"><a href="basic-concepts-in-probability.html#cb7-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-10"><a href="basic-concepts-in-probability.html#cb7-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-11"><a href="basic-concepts-in-probability.html#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb7-12"><a href="basic-concepts-in-probability.html#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We don’t know what is the density function but we can try to estimate it using the <span class="math inline">\(\texttt{hist}\)</span> function in R. Let us obtain 50 samples from this unkown distribution.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="basic-concepts-in-probability.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="basic-concepts-in-probability.html#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="basic-concepts-in-probability.html#cb8-3" aria-hidden="true" tabindex="-1"></a>unknown_sample_50 <span class="ot">&lt;-</span> <span class="fu">unknown_distribution</span>(<span class="dv">50</span>)</span></code></pre></div>
+<p>We can now plot the histogram for this sample.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="basic-concepts-in-probability.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(unknown_sample_50,</span>
+<span id="cb9-2"><a href="basic-concepts-in-probability.html#cb9-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Histogram of sample of size 50&quot;</span>,</span>
+<span id="cb9-3"><a href="basic-concepts-in-probability.html#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<p>As you can see, if we sum the areas of the rectangles in the histogram, this will sum more than <span class="math inline">\(1\)</span>. This is because by default the function <span class="math inline">\(\texttt{hist}\)</span> is not exactly a density estimator. For this, the area under the rectangles should add up to <span class="math inline">\(1\)</span>. To change this we can add the parameter <span class="math inline">\(\texttt{freq = FALSE}\)</span> in the <span class="math inline">\(\texttt{hist}\)</span> function.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="basic-concepts-in-probability.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(unknown_sample_50,</span>
+<span id="cb10-2"><a href="basic-concepts-in-probability.html#cb10-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">&quot;Histogram of sample of size 50&quot;</span>,</span>
+<span id="cb10-3"><a href="basic-concepts-in-probability.html#cb10-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb10-4"><a href="basic-concepts-in-probability.html#cb10-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>If the size of the sample gets bigger the histogram will converge to the true pmf or pdf of the random variable underlying the data.</p>
+<p>Let us now generate a sample of size <span class="math inline">\(n = 10,000\)</span> and plot again the histogram.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="basic-concepts-in-probability.html#cb11-1" aria-hidden="true" tabindex="-1"></a>unknown_sample_10000 <span class="ot">&lt;-</span> <span class="fu">unknown_distribution</span>(<span class="dv">10000</span>)</span></code></pre></div>
+<p>We can add more breaks between the bins by changing the parameter <span class="math inline">\(\texttt{breaks = }\)</span> in the function <span class="math inline">\(\texttt{hist}\)</span>. For example, setting <span class="math inline">\(\texttt{breaks = 100}\)</span> we can obtain something like this:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="basic-concepts-in-probability.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(unknown_sample_10000,</span>
+<span id="cb12-2"><a href="basic-concepts-in-probability.html#cb12-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">100</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="normal-distribution" class="section level2 hasAnchor" number="2.7">
+<h2><span class="header-section-number">2.7</span> Normal distribution<a href="basic-concepts-in-probability.html#normal-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A random variable <span class="math inline">\(X\)</span> has normal distribution with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> with <span class="math inline">\(\mu \in \mathbb{R}\)</span> and <span class="math inline">\(\sigma &gt; 0\)</span> if its pdf can be written as
+<span class="math display">\[\begin{equation*}
+  p_X(x) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2} \left( \frac{x-\mu}{\sigma}\right)^2 }
+\end{equation*}\]</span>
+If <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\sigma^2\)</span> we say <span class="math inline">\(X\)</span> follows a <strong>standard normal distribution</strong>.</p>
+<p>We can find in R the pdf and the cdf of a normal distribution using the functions <span class="math inline">\(\texttt{dnorm}\)</span> and <span class="math inline">\(\texttt{pnorm}\)</span>, respectively. These functions will take three parameters</p>
+<ul>
+<li><p>The value <span class="math inline">\(x\)</span> in which we want to evaluate the pmf or cdf.</p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{mean}\)</span> equal to <span class="math inline">\(\mu\)</span>. By default <span class="math inline">\(\texttt{mean} = 0\)</span></p></li>
+<li><p>The parameter <span class="math inline">\(\texttt{sd}\)</span> equal to <span class="math inline">\(\sigma\)</span>. By default <span class="math inline">\(\texttt{sd} = 1\)</span>.</p></li>
+</ul>
+<p>Additionally, we can obtain a sample of size <span class="math inline">\(n\)</span> following a normal distribution with the function <span class="math inline">\(\texttt{rnorm}\)</span>.</p>
+<p><strong>Exercise</strong>. The size of a brain in <span class="math inline">\(\text{cm}^3\)</span> can be estimated by a normal distribution with parameters <span class="math inline">\(\mu = 1350\)</span> and <span class="math inline">\(\sigma = 150\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Calculate in R the probability of having a brain between <span class="math inline">\(1200 \text{cm}^3\)</span> and <span class="math inline">\(1500 \text{cm}^3\)</span>.</p></li>
+<li><p>A brain was measured in a recently diseased patient and it was found its volume was <span class="math inline">\(1800 \text{cm}^3\)</span>. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?</p></li>
+<li><p>Simulate a sample of size 50 of brain sizes. Save the results in a vector called <span class="math inline">\(\texttt{brain_samples}\)</span>. Plot a normalized histogram of this sample. Use the following schema to overlay the true density of the sample:</p></li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="basic-concepts-in-probability.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of x values</span></span>
+<span id="cb13-2"><a href="basic-concepts-in-probability.html#cb13-2" aria-hidden="true" tabindex="-1"></a>x_brains_density <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">floor</span>(<span class="fu">min</span>(brain_samples)), <span class="fu">ceiling</span>(<span class="fu">max</span>(brain_samples)), <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb13-3"><a href="basic-concepts-in-probability.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="basic-concepts-in-probability.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the density for each of the x values</span></span>
+<span id="cb13-5"><a href="basic-concepts-in-probability.html#cb13-5" aria-hidden="true" tabindex="-1"></a>y_brains_density <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(x_brains_density, </span>
+<span id="cb13-6"><a href="basic-concepts-in-probability.html#cb13-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">mean =</span> <span class="dv">1350</span>,</span>
+<span id="cb13-7"><a href="basic-concepts-in-probability.html#cb13-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">sd =</span> <span class="dv">150</span>)</span>
+<span id="cb13-8"><a href="basic-concepts-in-probability.html#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="basic-concepts-in-probability.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay histogram with fitted density</span></span>
+<span id="cb13-10"><a href="basic-concepts-in-probability.html#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_brains_density, y_brains_density, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+</div>
+<div id="mean-and-variance" class="section level2 hasAnchor" number="2.8">
+<h2><span class="header-section-number">2.8</span> Mean and variance<a href="basic-concepts-in-probability.html#mean-and-variance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Given a random variable <span class="math inline">\(X\)</span> we define the <em>mean</em> of <span class="math inline">\(X\)</span> and we denote it with <span class="math inline">\(\mathbb{E}(X)\)</span> as the quantity
+<span class="math display">\[\begin{equation}
+  \mathbb{E}(X) = \begin{cases}
+  \sum_{x} x p_X(x) &amp; \text{if } X \text{ is discrete,} \\
+  \int_{-\infty}^{+\infty} x p_X(x) \,dx &amp; \text{if } X \text{ is continuous.}
+  \end{cases}
+\end{equation}\]</span></p>
+<p><strong>Examples.</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>If <span class="math inline">\(X\)</span> has a binomial distribution with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span> then <span class="math inline">\(\mathbb{E}(X) = np\)</span>.</p></li>
+<li><p>If <span class="math inline">\(X\)</span> has a Poisson distribution with rate <span class="math inline">\(\lambda\)</span> then <span class="math inline">\(\mathbb{E}(X) = \lambda\)</span>.</p></li>
+<li><p>If <span class="math inline">\(X\)</span> has a normal distribution with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> then <span class="math inline">\(\mathbb{E}(X) = \mu\)</span>.</p></li>
+</ol>
+<p>Given a random variable <span class="math inline">\(X\)</span> we define the <strong>variance</strong> of <span class="math inline">\(X\)</span> and we denote it with <span class="math inline">\(\mathrm{var}(X)\)</span> as the quantity
+<span class="math display">\[\begin{equation}
+  \mathrm{var}(X) = \begin{cases} \sum_{x} (x-\mathbb{E}(X))^2 p_X(x) &amp; \text{if } X \text{ is discrete,}  \\
+  \int_{-\infty}^{+\infty} (x-\mathbb{E}(X))^2 p_X(x) \,dx &amp; \text{if } X \text{ is continuous.}
+\end{cases}
+\end{equation}\]</span></p>
+<p><strong>Examples.</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>If <span class="math inline">\(X\)</span> has a binomial distribution with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span> then <span class="math inline">\(\mathrm{var}(X) = np(1-p)\)</span>.</p></li>
+<li><p>If <span class="math inline">\(X\)</span> has a Poisson distribution with rate <span class="math inline">\(\lambda\)</span> then <span class="math inline">\(\mathrm{var}(X) = \lambda\)</span>.</p></li>
+<li><p>If <span class="math inline">\(X\)</span> has a normal distribution with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> then <span class="math inline">\(\mathrm{var}(X) = \sigma^2\)</span>.</p></li>
+</ol>
+<p>Unless we are the ones simulating data from a well-known probabilistic model we don’t know the mean or the variance of a given data set. Hence why we would like to <em>estimate</em> these quantities. Given a random sample <span class="math inline">\(X_1, \dots, X_n\)</span> we define the <strong>sample mean</strong> and <strong>sample variance</strong> as
+<span class="math display">\[\begin{equation*}
+  \bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i \quad \text{and} \quad S_n^2 = \frac{1}{n-1} \sum_{i}^n (X_i - \bar{X}_n)^2,
+\end{equation*}\]</span>
+respectively.</p>
+<p>In R, given a vector <span class="math inline">\(\texttt{x}\)</span> we can calculate the sample mean and sample variance using the functions <span class="math inline">\(\texttt{mean}\)</span> and <span class="math inline">\(\texttt{var}\)</span>.</p>
+<p><strong>Exercise</strong>. Load the dataset <span class="math inline">\(\texttt{mean-variance.csv}\)</span>. The columns of this data set correspond to two data vectors of size <span class="math inline">\(1000\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p>A <a href="https://en.wikipedia.org/wiki/CpG_site">CpG site</a> is a region of DNA where a cytosine is followed by a guanine or viceversa. From a starting point in a linear sequence the length of a sequence until the occurrence of a CpG site was measured. This can be modeled with a <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> of parameter <span class="math inline">\(p\)</span>. The first column of the data set <span class="math inline">\(\texttt{mean-variance.csv}\)</span> gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate <span class="math inline">\(p\)</span>. Make a histogram of the dataset.</p></li>
+<li><p>When modelling <em>count data</em>, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the first column of <span class="math inline">\(\texttt{mean-variance.csv}\)</span> data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won´t necessarily get <em>the exact</em> same number, we will say the mean and variance are equal if the distance between them is less than <span class="math inline">\(0.5\)</span>.</p></li>
+</ol>
+</div>
+<div id="the-law-of-large-numbers" class="section level2 hasAnchor" number="2.9">
+<h2><span class="header-section-number">2.9</span> The Law of Large Numbers<a href="basic-concepts-in-probability.html#the-law-of-large-numbers" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The reason why we use the sample mean to estimate the true mean of the underlying distribution of the data is given by the <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">Law of Large Numbers</a>. In short, under fairly weak hypothesis, it can be proven that the sample mean <span class="math inline">\(\bar{X}_n\)</span> converges to the true mean <span class="math inline">\(\mathbb{E}(X)\)</span> when the sample size <span class="math inline">\(n\)</span> goes to infinity.</p>
+<p>Let us illustrate with an example. Let us start by throwing a fair die 10 times and calculate its mean. The distribution of a fair die is follows a <a href="https://en.wikipedia.org/wiki/Discrete_uniform_distribution">discrete uniform distribution</a>. It can be proven that the true mean of this distribution is <span class="math inline">\(3.5\)</span>. There is no base function in R to simulate random values coming from these distribution. However, we can easily build one<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="basic-concepts-in-probability.html#cb14-1" aria-hidden="true" tabindex="-1"></a>rdunif <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">a=</span><span class="dv">1</span>, <span class="at">b=</span><span class="dv">6</span>) {</span>
+<span id="cb14-2"><a href="basic-concepts-in-probability.html#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The function will take three parameters</span></span>
+<span id="cb14-3"><a href="basic-concepts-in-probability.html#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n: the number of random values to be simulated</span></span>
+<span id="cb14-4"><a href="basic-concepts-in-probability.html#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># a: the minimum value, by default it will be 1</span></span>
+<span id="cb14-5"><a href="basic-concepts-in-probability.html#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># b: the maximum value, by default it will be 6</span></span>
+<span id="cb14-6"><a href="basic-concepts-in-probability.html#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sample</span>(a<span class="sc">:</span>b,n, <span class="at">replace=</span>T))</span>
+<span id="cb14-7"><a href="basic-concepts-in-probability.html#cb14-7" aria-hidden="true" tabindex="-1"></a>} </span></code></pre></div>
+<p>We can now simulate ten tosses of the die and calculate the mean.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="basic-concepts-in-probability.html#cb15-1" aria-hidden="true" tabindex="-1"></a>fair_die <span class="ot">&lt;-</span> <span class="fu">rdunif</span>(<span class="dv">10</span>)</span>
+<span id="cb15-2"><a href="basic-concepts-in-probability.html#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="basic-concepts-in-probability.html#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fair_die)</span></code></pre></div>
+<p>What if we throw it a hundred times?</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="basic-concepts-in-probability.html#cb16-1" aria-hidden="true" tabindex="-1"></a>fair_die <span class="ot">&lt;-</span> <span class="fu">c</span>(fair_die, <span class="fu">rdunif</span>(<span class="dv">90</span>))</span>
+<span id="cb16-2"><a href="basic-concepts-in-probability.html#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="basic-concepts-in-probability.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fair_die)</span></code></pre></div>
+<p>And what if we throw it a thousand times?</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="basic-concepts-in-probability.html#cb17-1" aria-hidden="true" tabindex="-1"></a>fair_die <span class="ot">&lt;-</span> <span class="fu">c</span>(fair_die, <span class="fu">rdunif</span>(<span class="dv">900</span>))</span>
+<span id="cb17-2"><a href="basic-concepts-in-probability.html#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="basic-concepts-in-probability.html#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fair_die)</span></code></pre></div>
+<p>We can see the convergence to the mean in the following plot:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="basic-concepts-in-probability.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We store the total length of the vector</span></span>
+<span id="cb18-2"><a href="basic-concepts-in-probability.html#cb18-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(fair_die)</span>
+<span id="cb18-3"><a href="basic-concepts-in-probability.html#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="basic-concepts-in-probability.html#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># We create two vectors:</span></span>
+<span id="cb18-5"><a href="basic-concepts-in-probability.html#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># sample_mean_fair_die: The value of the sample mean</span></span>
+<span id="cb18-6"><a href="basic-concepts-in-probability.html#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                       up to to the i-th sample element.</span></span>
+<span id="cb18-7"><a href="basic-concepts-in-probability.html#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sample_mean_difference_fair_die: The difference between the sample mean</span></span>
+<span id="cb18-8"><a href="basic-concepts-in-probability.html#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                             and the true mean (3.5) in absolute value</span></span>
+<span id="cb18-9"><a href="basic-concepts-in-probability.html#cb18-9" aria-hidden="true" tabindex="-1"></a>sample_mean_fair_die <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)</span>
+<span id="cb18-10"><a href="basic-concepts-in-probability.html#cb18-10" aria-hidden="true" tabindex="-1"></a>sample_mean_difference_fair_die <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)</span>
+<span id="cb18-11"><a href="basic-concepts-in-probability.html#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="basic-concepts-in-probability.html#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb18-13"><a href="basic-concepts-in-probability.html#cb18-13" aria-hidden="true" tabindex="-1"></a>  sample_mean_fair_die[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(fair_die[<span class="dv">1</span><span class="sc">:</span>i])</span>
+<span id="cb18-14"><a href="basic-concepts-in-probability.html#cb18-14" aria-hidden="true" tabindex="-1"></a>  sample_mean_difference_fair_die[i] <span class="ot">&lt;-</span> <span class="fu">abs</span>(sample_mean_fair_die[i]<span class="sc">-</span><span class="fl">3.5</span>)</span>
+<span id="cb18-15"><a href="basic-concepts-in-probability.html#cb18-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-16"><a href="basic-concepts-in-probability.html#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="basic-concepts-in-probability.html#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="basic-concepts-in-probability.html#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co"># This will create two plots, one with the value of the sample mean</span></span>
+<span id="cb18-19"><a href="basic-concepts-in-probability.html#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co"># and the other with the difference between the sample mean and the true mean</span></span>
+<span id="cb18-20"><a href="basic-concepts-in-probability.html#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="basic-concepts-in-probability.html#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb18-22"><a href="basic-concepts-in-probability.html#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="basic-concepts-in-probability.html#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co"># First plot</span></span>
+<span id="cb18-24"><a href="basic-concepts-in-probability.html#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span>n, </span>
+<span id="cb18-25"><a href="basic-concepts-in-probability.html#cb18-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> sample_mean_fair_die, </span>
+<span id="cb18-26"><a href="basic-concepts-in-probability.html#cb18-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb18-27"><a href="basic-concepts-in-probability.html#cb18-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Sample size&quot;</span>,</span>
+<span id="cb18-28"><a href="basic-concepts-in-probability.html#cb18-28" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Sample mean&quot;</span>)</span>
+<span id="cb18-29"><a href="basic-concepts-in-probability.html#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="basic-concepts-in-probability.html#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="co"># This will create a horizontal line at y = 3.5.</span></span>
+<span id="cb18-31"><a href="basic-concepts-in-probability.html#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fl">3.5</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb18-32"><a href="basic-concepts-in-probability.html#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="basic-concepts-in-probability.html#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Second plot</span></span>
+<span id="cb18-34"><a href="basic-concepts-in-probability.html#cb18-34" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span>n, </span>
+<span id="cb18-35"><a href="basic-concepts-in-probability.html#cb18-35" aria-hidden="true" tabindex="-1"></a>     <span class="at">y =</span> sample_mean_difference_fair_die, </span>
+<span id="cb18-36"><a href="basic-concepts-in-probability.html#cb18-36" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb18-37"><a href="basic-concepts-in-probability.html#cb18-37" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Sample size&quot;</span>,</span>
+<span id="cb18-38"><a href="basic-concepts-in-probability.html#cb18-38" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Sample mean minus true mean&quot;</span>)</span>
+<span id="cb18-39"><a href="basic-concepts-in-probability.html#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="basic-concepts-in-probability.html#cb18-40" aria-hidden="true" tabindex="-1"></a><span class="co"># This will create a horizontal line at y = 0.</span></span>
+<span id="cb18-41"><a href="basic-concepts-in-probability.html#cb18-41" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb18-42"><a href="basic-concepts-in-probability.html#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-43"><a href="basic-concepts-in-probability.html#cb18-43" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Convergence of the sample mean&quot;</span>, <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="sc">-</span> <span class="dv">2</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><strong>Exercise</strong>. Given a random variable <span class="math inline">\(X\)</span> with Poisson distribution of rate <span class="math inline">\(\lambda\)</span>, the probability that <span class="math inline">\(X\)</span> is bigger than a certain real number <span class="math inline">\(x\)</span> is
+<span class="math display">\[\begin{equation*}
+  \mathrm{P}(X \geq x) = \sum_{i = \left\lceil x\right\rceil}^{+\infty} \frac{e^{-\lambda} \lambda^i}{i!}.
+\end{equation*}\]</span>
+We can ask R to give us this probability using <span class="math inline">\(\texttt{ppois}\)</span>. However, due to the Law of Large Numbers, we can also estimate it as follows.</p>
+<ol style="list-style-type: decimal">
+<li><p>Simulate <span class="math inline">\(n = 10,000\)</span> random numbers from a Poisson distribution with any rate you desire.</p></li>
+<li><p>For any real positive number <span class="math inline">\(x\)</span> of your choice, calculate how many data points are bigger or equal than <span class="math inline">\(x\)</span>. Divide that number by the total number of points <span class="math inline">\(n\)</span>.</p></li>
+<li><p>Compare what you found in part (2) with the number you get by doing <span class="math inline">\(\texttt{ppois}\)</span>.</p></li>
+<li><p>(Optional) Repeat the parts (1)-(3) to estimate the probability that a standard normal distribution is less or equal than <span class="math inline">\(-0.5\)</span>.</p></li>
+</ol>
+<p><strong>Exercise</strong> (Advanced). A consequence of the Law of Large Numbers is that the sample variance <span class="math inline">\(S^2\)</span> also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>If you are interested, you can check the wikipedia page for <a href="https://en.wikipedia.org/wiki/Measurable_function">measurable function.</a><a href="basic-concepts-in-probability.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Essentially, something that despite being infinite you could enumerate with the natural numbers. More on this <a href="https://en.wikipedia.org/wiki/Countable_set">here</a>.<a href="basic-concepts-in-probability.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Strictly speaking these are <em>absolutely continuous random variables</em> but for the sake of simplicity we will call them simply <em>continuous</em>. These notions are not equivalent but they are not in the scope of this workshop<a href="basic-concepts-in-probability.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>This is a modification of the code found <a href="https://stats.stackexchange.com/questions/3930/are-there-default-functions-for-discrete-uniform-distributions-in-r">here</a><a href="basic-concepts-in-probability.html#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="some-words-about-the-workshop.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="hypothesis-testing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
