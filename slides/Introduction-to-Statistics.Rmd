@@ -437,7 +437,7 @@ hist(unknown_sample_10000,
 
 ## Normal distribution
 
-A random variable $X$ has normal distribution of parameters $\mu$ and $\sigma^2$ with $\mu \in \R$ and $\sigma > 0$ if its pdf can be written as
+A random variable $X$ has normal distribution with parameters $\mu$ and $\sigma^2$ with $\mu \in \R$ and $\sigma > 0$ if its pdf can be written as
 \begin{equation*}
   p_X(x) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2} \left( \frac{x-\mu}{\sigma}\right)^2 }
 \end{equation*}
@@ -457,12 +457,12 @@ Additionally, we can obtain a sample of size $n$ following a normal distribution
 
 1. Calculate in R the probability of having a brain between $1200 \text{cm}^3$ and $1500 \text{cm}^3$.
 
-2. A brain was measured in a recently deseased patient and it was found its volume was $1800 \text{cm}^3$. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?
+2. A brain was measured in a recently diseased patient and it was found its volume was $1800 \text{cm}^3$. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?
 
 3. Simulate a sample of size 50 of brain sizes. Save the results in a vector called $\texttt{brain_samples}$. Plot a normalized histogram of this sample. Use the following schema to overlay the true density of the sample:
 ```{r eval = FALSE}
 # Create a grid of x values
-x_brains_density <- seq(floor(min(brains_samples)), ceiling(max(brains_samples)), by = 1)
+x_brains_density <- seq(floor(min(brain_samples)), ceiling(max(brain_samples)), by = 1)
 
 # Calculate the density for each of the x values
 y_brains_density <- dnorm(x_brains_density, 
@@ -480,7 +480,7 @@ lines(x_brains_density, y_brains_density, col = "red")
 Given a random variable $X$ we define the *mean* of $X$ and we denote it with $\E(X)$ as the quantity
 \begin{equation}
   \E(X) = \begin{cases}
-  \sum_{x} x p_X(x) & \text{if } X \text{ is discrete} \\
+  \sum_{x} x p_X(x) & \text{if } X \text{ is discrete,} \\
   \int_{-\infty}^{+\infty} x p_X(x) \,dx & \text{if } X \text{ is continuous.}
   \end{cases}
 \end{equation}
@@ -495,8 +495,8 @@ Given a random variable $X$ we define the *mean* of $X$ and we denote it with $\
 
 Given a random variable $X$ we define the **variance** of $X$ and we denote it with $\var(X)$ as the quantity
 \begin{equation}
-  \var(X) = \begin{cases} \sum_{x} (x-\E(X))^2 p_X(x) & \text{if } X \text{ is discrete}  \\
-  \int_{-\infty}^{+\infty} (x-\E(X))^2 p_X(x) \,dx \quad \text{if } X \text{ is continuous.}
+  \var(X) = \begin{cases} \sum_{x} (x-\E(X))^2 p_X(x) & \text{if } X \text{ is discrete,}  \\
+  \int_{-\infty}^{+\infty} (x-\E(X))^2 p_X(x) \,dx & \text{if } X \text{ is continuous.}
 \end{cases}
 \end{equation}
 
@@ -518,7 +518,7 @@ In R, given a vector $\texttt{x}$ we can calculate the sample mean and sample va
 
 **Exercise**. Load the dataset $\texttt{mean-variance.csv}$. The columns of this data set correspond to two data vectors of size $1000$.
 
-1. A [CpG site](https://en.wikipedia.org/wiki/CpG_site) is a region of DNA where a cytosine is followed by a guanine. From a starting point in a linear sequence the length of a sequence until the ocurrence of a CpG site was measured. This can be modeled with a [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) of parameter $p$. The first column of the data set $\texttt{mean-variance.csv}$ gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate $p$. Make a histogram of the dataset.
+1. A [CpG site](https://en.wikipedia.org/wiki/CpG_site) is a region of DNA where a cytosine is followed by a guanine or viceversa. From a starting point in a linear sequence the length of a sequence until the occurrence of a CpG site was measured. This can be modeled with a [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) of parameter $p$. The first column of the data set $\texttt{mean-variance.csv}$ gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate $p$. Make a histogram of the dataset.
 
 2. When modelling *count data*, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the first column of $\texttt{mean-variance.csv}$ data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won´t necessarily get *the exact* same number, we will say the mean and variance are equal if the distance between them is less than $0.5$.
 
@@ -623,13 +623,13 @@ We can ask R to give us this probability using $\texttt{ppois}$. However, due  t
 
 4. (Optional) Repeat the parts (1)-(3) to estimate the probability that a standard normal distribution is less or equal than $-0.5$.
 
-**Exercise** (Advanced). A consequence of the Law of Large Numbers is that the sample variance $S^2$ also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you would like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.
+**Exercise** (Advanced). A consequence of the Law of Large Numbers is that the sample variance $S^2$ also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.
 
 # Hypothesis testing
 
 ## Introductory example
 
-We have been hired to do quality control at a factory that produces dies for a board game in which getting a $6$ is extremely important. We know don't want to ruin the players' experience so if the die is not a fair die we want to discard the die. Given a particular die we construct two hypothesis:
+We have been hired to do quality control at a factory that produces dice for a board game in which getting a $6$ is extremely important. We know don't want to ruin the players' experience so if a die is not a fair die we want to discard the die. Given a particular die we construct two hypothesis:
 
 \begin{equation*}
 H_0: \text{The die is fair} \quad \text{and} \quad H_1: \text{The die is not fair}
@@ -637,7 +637,7 @@ H_0: \text{The die is fair} \quad \text{and} \quad H_1: \text{The die is not fai
 
 Given time constraints we have only time to throw the die a hundred times. If the die is fair we expect to see approximately $100 \times \frac{1}{6} \approx 17$ sixes, so we create the following rule: *if the number of 6 is higher than 20, we will discard the die*. 
 
-The company is very environmentally friendly so we don't want to throw unnecessary die. We would take an incorrect decision if the die is fair but we decide to throw it. Given a perfectly good die, we want to estimate how frequently we throw incorrectly these dice.
+The company is very environmentally friendly so we don't want to throw unnecessary dice. We would take an incorrect decision if the die is fair but we decide to throw it. Given a perfectly good die, we want to estimate how frequently we would throw incorrectly these dice.
 
 Let us first simulate 100 tosses of 1000 dice. One way of doing this is simulating $100 \times 1000$ tosses and then puting the result in a matrix.
 
@@ -655,7 +655,6 @@ hist(fair_dice_tosses,
      main = "",
      xlab = "Outcome of a fair die toss")
 ```
-
 
 Here comes the tricky part. We want for each of die we want to calculate the number of sixes that were observed.
 ```{r}
@@ -677,18 +676,18 @@ hist(fair_die_number_sixes,
      col = "deepskyblue")
 ```
 
-We are now ready to estimate the probability of ditching a perfectly good die.
+We are now ready to estimate the probability of throwing away a perfectly good die.
 ```{r}
 (sum(fair_die_number_sixes>20))/1000
 ```
 
 Maybe our problem is we are being too strict with our rule of decision. Let us change it and let us say that we will throw the die if the number of sixes is higher than 25. Let us recalculate now the probability of throwing good die.
-We are now ready to estimate the probability of ditching a perfectly good die.
+
 ```{r}
 (sum(fair_die_number_sixes>25))/1000
 ```
 
-Now sometimes the machine produces dices that are loaded and have a lower probability of landing on a $1$ or $6$ but higher probability of landing on a $5$ or a $2$. We would like our rule to also make us throw those dice away. Let us estimate now what is the probability of not throwing away those dice.
+Now sometimes the machine produces dice that are loaded and have a lower probability of landing on a $1$ or $6$ but higher probability of landing on a $5$ or a $2$. We would like our rule to also make us throw those dice away. Let us estimate now what is the probability of not throwing away those dice.
 
 First let us build a function in R to throw loaded dice.
 ```{r eval = FALSE}
@@ -750,7 +749,7 @@ plot(hgB, col = c2, add = TRUE) # Add 2nd histogram using different color
 abline(v = 20, col = "red", lwd = 2)
 abline(v = 25, col = "red", lwd = 2)
 ```
-We can now calculate the probability of not throwing the loaded dice away.
+We can now calculate the probability of not throwing the loaded die away.
 ```{r eval = FALSE}
 (sum(fair_die_number_sixes<=25))/1000
 ```

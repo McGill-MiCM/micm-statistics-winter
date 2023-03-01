@@ -384,7 +384,7 @@ As a consequence, it can be proven that that for any real numbers <span class="m
 </div>
 <div id="normal-distribution" class="section level2 hasAnchor" number="2.7">
 <h2><span class="header-section-number">2.7</span> Normal distribution<a href="basic-concepts-in-probability.html#normal-distribution" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>A random variable <span class="math inline">\(X\)</span> has normal distribution of parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> with <span class="math inline">\(\mu \in \mathbb{R}\)</span> and <span class="math inline">\(\sigma &gt; 0\)</span> if its pdf can be written as
+<p>A random variable <span class="math inline">\(X\)</span> has normal distribution with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> with <span class="math inline">\(\mu \in \mathbb{R}\)</span> and <span class="math inline">\(\sigma &gt; 0\)</span> if its pdf can be written as
 <span class="math display">\[\begin{equation*}
   p_X(x) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2} \left( \frac{x-\mu}{\sigma}\right)^2 }
 \end{equation*}\]</span>
@@ -399,11 +399,11 @@ If <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\s
 <p><strong>Exercise</strong>. The size of a brain in <span class="math inline">\(\text{cm}^3\)</span> can be estimated by a normal distribution with parameters <span class="math inline">\(\mu = 1350\)</span> and <span class="math inline">\(\sigma = 150\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li><p>Calculate in R the probability of having a brain between <span class="math inline">\(1200 \text{cm}^3\)</span> and <span class="math inline">\(1500 \text{cm}^3\)</span>.</p></li>
-<li><p>A brain was measured in a recently deseased patient and it was found its volume was <span class="math inline">\(1800 \text{cm}^3\)</span>. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?</p></li>
+<li><p>A brain was measured in a recently diseased patient and it was found its volume was <span class="math inline">\(1800 \text{cm}^3\)</span>. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?</p></li>
 <li><p>Simulate a sample of size 50 of brain sizes. Save the results in a vector called <span class="math inline">\(\texttt{brain_samples}\)</span>. Plot a normalized histogram of this sample. Use the following schema to overlay the true density of the sample:</p></li>
 </ol>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="basic-concepts-in-probability.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of x values</span></span>
-<span id="cb13-2"><a href="basic-concepts-in-probability.html#cb13-2" aria-hidden="true" tabindex="-1"></a>x_brains_density <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">floor</span>(<span class="fu">min</span>(brains_samples)), <span class="fu">ceiling</span>(<span class="fu">max</span>(brains_samples)), <span class="at">by =</span> <span class="dv">1</span>)</span>
+<span id="cb13-2"><a href="basic-concepts-in-probability.html#cb13-2" aria-hidden="true" tabindex="-1"></a>x_brains_density <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">floor</span>(<span class="fu">min</span>(brain_samples)), <span class="fu">ceiling</span>(<span class="fu">max</span>(brain_samples)), <span class="at">by =</span> <span class="dv">1</span>)</span>
 <span id="cb13-3"><a href="basic-concepts-in-probability.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="basic-concepts-in-probability.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the density for each of the x values</span></span>
 <span id="cb13-5"><a href="basic-concepts-in-probability.html#cb13-5" aria-hidden="true" tabindex="-1"></a>y_brains_density <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(x_brains_density, </span>
@@ -418,7 +418,7 @@ If <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\s
 <p>Given a random variable <span class="math inline">\(X\)</span> we define the <em>mean</em> of <span class="math inline">\(X\)</span> and we denote it with <span class="math inline">\(\mathbb{E}(X)\)</span> as the quantity
 <span class="math display">\[\begin{equation}
   \mathbb{E}(X) = \begin{cases}
-  \sum_{x} x p_X(x) &amp; \text{if } X \text{ is discrete} \\
+  \sum_{x} x p_X(x) &amp; \text{if } X \text{ is discrete,} \\
   \int_{-\infty}^{+\infty} x p_X(x) \,dx &amp; \text{if } X \text{ is continuous.}
   \end{cases}
 \end{equation}\]</span></p>
@@ -430,8 +430,8 @@ If <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\s
 </ol>
 <p>Given a random variable <span class="math inline">\(X\)</span> we define the <strong>variance</strong> of <span class="math inline">\(X\)</span> and we denote it with <span class="math inline">\(\mathrm{var}(X)\)</span> as the quantity
 <span class="math display">\[\begin{equation}
-  \mathrm{var}(X) = \begin{cases} \sum_{x} (x-\mathbb{E}(X))^2 p_X(x) &amp; \text{if } X \text{ is discrete}  \\
-  \int_{-\infty}^{+\infty} (x-\mathbb{E}(X))^2 p_X(x) \,dx \quad \text{if } X \text{ is continuous.}
+  \mathrm{var}(X) = \begin{cases} \sum_{x} (x-\mathbb{E}(X))^2 p_X(x) &amp; \text{if } X \text{ is discrete,}  \\
+  \int_{-\infty}^{+\infty} (x-\mathbb{E}(X))^2 p_X(x) \,dx &amp; \text{if } X \text{ is continuous.}
 \end{cases}
 \end{equation}\]</span></p>
 <p><strong>Examples.</strong></p>
@@ -448,7 +448,7 @@ respectively.</p>
 <p>In R, given a vector <span class="math inline">\(\texttt{x}\)</span> we can calculate the sample mean and sample variance using the functions <span class="math inline">\(\texttt{mean}\)</span> and <span class="math inline">\(\texttt{var}\)</span>.</p>
 <p><strong>Exercise</strong>. Load the dataset <span class="math inline">\(\texttt{mean-variance.csv}\)</span>. The columns of this data set correspond to two data vectors of size <span class="math inline">\(1000\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li><p>A <a href="https://en.wikipedia.org/wiki/CpG_site">CpG site</a> is a region of DNA where a cytosine is followed by a guanine. From a starting point in a linear sequence the length of a sequence until the ocurrence of a CpG site was measured. This can be modeled with a <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> of parameter <span class="math inline">\(p\)</span>. The first column of the data set <span class="math inline">\(\texttt{mean-variance.csv}\)</span> gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate <span class="math inline">\(p\)</span>. Make a histogram of the dataset.</p></li>
+<li><p>A <a href="https://en.wikipedia.org/wiki/CpG_site">CpG site</a> is a region of DNA where a cytosine is followed by a guanine or viceversa. From a starting point in a linear sequence the length of a sequence until the occurrence of a CpG site was measured. This can be modeled with a <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> of parameter <span class="math inline">\(p\)</span>. The first column of the data set <span class="math inline">\(\texttt{mean-variance.csv}\)</span> gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate <span class="math inline">\(p\)</span>. Make a histogram of the dataset.</p></li>
 <li><p>When modelling <em>count data</em>, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the first column of <span class="math inline">\(\texttt{mean-variance.csv}\)</span> data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won´t necessarily get <em>the exact</em> same number, we will say the mean and variance are equal if the distance between them is less than <span class="math inline">\(0.5\)</span>.</p></li>
 </ol>
 </div>
@@ -530,7 +530,7 @@ We can ask R to give us this probability using <span class="math inline">\(\text
 <li><p>Compare what you found in part (2) with the number you get by doing <span class="math inline">\(\texttt{ppois}\)</span>.</p></li>
 <li><p>(Optional) Repeat the parts (1)-(3) to estimate the probability that a standard normal distribution is less or equal than <span class="math inline">\(-0.5\)</span>.</p></li>
 </ol>
-<p><strong>Exercise</strong> (Advanced). A consequence of the Law of Large Numbers is that the sample variance <span class="math inline">\(S^2\)</span> also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you would like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.</p>
+<p><strong>Exercise</strong> (Advanced). A consequence of the Law of Large Numbers is that the sample variance <span class="math inline">\(S^2\)</span> also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.</p>
 </div>
 </div>
 <div class="footnotes">
