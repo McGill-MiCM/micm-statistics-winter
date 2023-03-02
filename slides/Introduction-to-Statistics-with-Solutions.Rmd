@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Statistics in R"
+title: "Introduction to Statistics in R (With Solutions)"
 author: "Gerardo Martínez"
 date: "2023-03-01"
 output: bookdown::gitbook
@@ -57,9 +57,9 @@ An experiment in which there is one event called *success* and another called *f
 
 ## The probability mass function (pmf)
 
-Given a random variable $X$ defined on a finite or countably infinite^[Essentially, something that despite being infinite you could enumerate with the natural numbers. More on this [here](https://en.wikipedia.org/wiki/Countable_set).] state space we will define the **probability mass function (pmf)** and denote it with $p_X(x)$ as the function such that for a real number $x$
+Given a random variable $X$ defined on a finite or countably infinite^[Essentially, something that despite being infinite you could enumerate with the natural numbers. More on this [here](https://en.wikipedia.org/wiki/Countable_set).] state space we will define the **probability mass function (pmf)** and denote it with $p(x)$ as the function such that for a real number $x$
 \begin{equation*}
-p_X(x) = \P(X = x)
+p(x) = \P(X = x)
 \end{equation*}
 
 **Example**. Continuing with the example, imagine we know that the probability with which we see a mutation is $p$. Then
@@ -68,7 +68,7 @@ p_X(x) = \P(X = x)
 \end{equation*}
 Then the pmf of $X$ is
 \begin{equation*}
-p_X(x) = \begin{cases}
+p(x) = \begin{cases}
 p & \text{if } x = 1 \\
 1-p & \text{if } x = 0 \\
 0 & \text{in other cases}
@@ -101,7 +101,28 @@ dbinom(0, size = 1, prob = 10^{-8}) == 1
 
 **Exercise** (Beginner). Check for a handful of real values $x$ other than $0$ and $1$ that the pmf evaluated at $x$ for a random variable with Bernoulli distribution with probability $p = 0.2$ is indeed 0.
 
+```{r}
+# The idea is to only check a few values. The student can chose their favorites.
+
+dbinom(c(-1, 0.5, pi), size = 1, prob = 0.2)
+```
+
 **Exercise** (Advanced). Create a grid of values between $-1$ and $1$ and store the results in a vector called $\texttt{x_bernoulli}$. Find the pmf of a random variable with Bernoulli distribution with probability $p = 0.2$ at each of the grid points; store the results in a vector called $\texttt{pmf_bernoulli}$. Plot on the $x$ axis the grid values and on the $y$ axis the pmf.
+
+```{r warning = FALSE}
+# Let's create the grid values. The by parameter can be chosen by the student.
+x_bernoulli <- seq(-1, 1, by = 0.01)
+
+# Evalue the grid points on the pmf
+pmf_bernoulli <- dbinom(x_bernoulli, size = 1, prob = 0.2)
+
+# Plot the pmf values
+plot(x_bernoulli, pmf_bernoulli, 
+     pch = 16, 
+     col = "chartreuse4", 
+     xlab = "x", ylab = "pmf")
+```
+
 
 ### Simulating Bernoulli trials
 
@@ -114,6 +135,13 @@ In R we can simulate Bernoulli trials using the function $\texttt{rbinom}$. The 
 * The parameter $\texttt{prob}$ equal to the probability of a success, that is $\texttt{prob} = p$.
 
 **Exercise** Throwing a coin takes about 1 second. Throwing it 1000 times takes about 15 minutes. We can easily implement such a thing in R. Considering it is a fair coin, throw the coin 1000 times using R and save the result in a vector called $\texttt{x}$.
+
+```{r}
+x <- rbinom(1000, size = 1, prob = 0.2)
+
+head(x)
+```
+
 
 ## The cumulative distribution function (cdf)
 Sometimes, we will be interested in calculating the probability that a random variable is less or equal than a real number $x$. Given a random variable $X$ we will define its **cumulative distribution function (cdf)** and denote it with $F_X(x)$ as the function such that given a real number $x$,
@@ -284,9 +312,29 @@ mtext("Binomial distribution with p = 0.2 and n = 10", side = 3, line = - 2, out
 
 1. there are exactly 10 individuals with diabetes in the sample,
 
+```{r}
+dbinom(x = 10, size = 100, prob = 0.066)
+```
+
 2. there are 10 individuals or less with diabetes in the sample,
 
+```{r}
+pbinom(10, size = 100, prob = 0.066)
+```
+
+
 3. more than half of the individuals are diabetic.
+
+```{r}
+# Two possibilities for this. Either do
+1 - pbinom(50, size = 100, prob = 0.066)
+
+# or do
+pbinom(50, size = 100, prob = 0.066, lower.tail = FALSE)
+
+# We can check if they're the same thing
+(1 - pbinom(50, size = 100, prob = 0.066)) == pbinom(50, size = 100, prob = 0.066, lower.tail = FALSE)
+```
 
 ### Simulating random values from a binomial distribution
 
@@ -366,8 +414,22 @@ Consider $\lambda = 30$ and let us model the number of times a nucleotide is seq
 
 1. Calculate the probability that it is read exactly one time.
 
+```{r}
+dpois(30, lambda = 30)
+```
+
 2. Calculate the probability that it has been sequenced at least one time. (Hint: Look into the parameter $\texttt{lower.tail}$ by doing $\texttt{?ppois}$ in your R terminal).
 
+```{r}
+# Two possibilities for this. Either do
+1 - ppois(0, lambda = 30)
+
+# or do
+ppois(0, lambda = 30, lower.tail = FALSE)
+
+# We can check if they're the same thing
+1 - ppois(0, lambda = 30) == ppois(0, lambda = FALSE, lower.tail = FALSE)
+```
 ## Continuous random variables
 
 An (absolutely)^[Strictly speaking these are *absolutely continuous random variables* but for the sake of simplicity we will call them simply *continuous*. These notions are not equivalent but they are not in the scope of this workshop] continuous random variable $X$ is an RV for which there exists a function $p_X$ that we will call the **probability density function (pdf)** such that the cdf can be written
@@ -434,7 +496,6 @@ hist(unknown_sample_10000,
      breaks = 100)
 ```
 
-
 ## Normal distribution
 
 A random variable $X$ has normal distribution with parameters $\mu$ and $\sigma^2$ with $\mu \in \R$ and $\sigma > 0$ if its pdf can be written as
@@ -457,8 +518,15 @@ Additionally, we can obtain a sample of size $n$ following a normal distribution
 
 1. Calculate in R the probability of having a brain between $1200 \text{cm}^3$ and $1500 \text{cm}^3$.
 
+```{r}
+pnorm(1500, mean = 1350, sd = 150) - pnorm(1200, mean = 1350, sd = 150)
+```
+
 2. A brain was measured in a recently diseased patient and it was found its volume was $1800 \text{cm}^3$. The doctor who measured feels something must have been wrong with the patient. How likely it is to find a brain size like that one or bigger by pure chance?
 
+```{r}
+pnorm(1800, mean = 1350, sd = 150, lower.tail = FALSE)
+```
 3. Simulate a sample of size 50 of brain sizes. Save the results in a vector called $\texttt{brain_samples}$. Plot a normalized histogram of this sample. Use the following code to overlay the true density of the sample:
 ```{r eval = FALSE}
 # Create a grid of x values
@@ -474,6 +542,22 @@ lines(x_brains_density, y_brains_density, col = "red")
 
 ```
 
+```{r}
+brain_samples <- rnorm(n = 50, mean = 1350, sd = 150)
+
+hist(brain_samples, freq = FALSE, col = "chartreuse4")
+
+# Create a grid of x values
+x_brains_density <- seq(floor(min(brain_samples)), ceiling(max(brain_samples)), by = 1)
+
+# Calculate the density for each of the x values
+y_brains_density <- dnorm(x_brains_density, 
+                          mean = 1350,
+                          sd = 150)
+
+# Overlay histogram with fitted density
+lines(x_brains_density, y_brains_density, col = "red", lwd = 2)
+```
 
 ## Mean and variance
 
@@ -496,7 +580,7 @@ Given a random variable $X$ we define the *mean* of $X$ and we denote it with $\
 Given a random variable $X$ we define the **variance** of $X$ and we denote it with $\var(X)$ as the quantity
 \begin{equation}
   \var(X) = \begin{cases} \sum_{x} (x-\E(X))^2 p_X(x) & \text{if } X \text{ is discrete,}  \\
-  \int_{-\infty}^{+\infty} (x-\E(X))^2 p_X(x) \,dx & \text{if } X \text{ is continuous.}
+  \int_{-\infty}^{+\infty} (x-\E(X))^2 p_X(x) \,dx  & \text{if } X \text{ is continuous.}
 \end{cases}
 \end{equation}
 
@@ -520,8 +604,26 @@ In R, given a vector $\texttt{x}$ we can calculate the sample mean and sample va
 
 1. A [CpG site](https://en.wikipedia.org/wiki/CpG_site) is a region of DNA where a cytosine is followed by a guanine or viceversa. From a starting point in a linear sequence the length of a sequence until the occurrence of a CpG site was measured. This can be modeled with a [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution) of parameter $p$. The first column of the data set $\texttt{mean-variance.csv}$ gives us the length of a non-CpG site until a CpG site is found. Find the sample mean and sample variance to estimate $p$. Make a histogram of the dataset.
 
-2. When modelling *count data*, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the second column of $\texttt{mean-variance.csv}$ data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won't necessarily get *the exact* same number, we will say the mean and variance are equal if the distance between them is less than $0.5$.
+```{r}
+mean_variance <- read.csv("C:/Users/Gerardo/Downloads/mean-variance.csv", header=FALSE)
 
+# Mean is
+mean(mean_variance[,1])
+```
+```{r}
+# In a geometric distribution, E(X) = 1/p. Then p is
+1/mean(mean_variance[,1])
+```
+```{r}
+hist(mean_variance[,1], main = "", freq = FALSE, xlab = "x")
+```
+
+2. When modelling *count data*, that is, data that comes from an underlying model that counts the number of events of a certain type, a Poisson distribution is usually used. However, as we have seen, the Poisson distribution has equal mean and variance. In the second column of $\texttt{mean-variance.csv}$ data we have the number of counts of the expression of the gene NeuN in neurons. Check if the mean is equal to the variance. As you won´t necessarily get *the exact* same number, we will say the mean and variance are equal if the distance between them is less than $0.5$.
+
+```{r}
+mean(mean_variance[,2])
+var(mean_variance[,2])
+```
 ## The Law of Large Numbers
 
 The reason why we use the sample mean to estimate the true mean of the underlying distribution of the data is given by the [Law of Large Numbers](https://en.wikipedia.org/wiki/Law_of_large_numbers). In short, under fairly weak hypothesis, it can be proven that the sample mean $\bar{X}_n$ converges to the true mean $\E(X)$ when the sample size $n$ goes to infinity.
@@ -623,7 +725,7 @@ We can ask R to give us this probability using $\texttt{ppois}$. However, due  t
 
 4. (Optional) Repeat the parts (1)-(3) to estimate the probability that a standard normal distribution is less or equal than $-0.5$.
 
-**Exercise** (Advanced). A consequence of the Law of Large Numbers is that the sample variance $S^2$ also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.
+**Exercise** (Advanced). A consequence of the Law of Large Numbers is that the sample variance $S^2$ also converges to the true variance of the underlying distribution. Simulate 1000 data points from a normal distribution; you can choose the mean and variance you would like. Modify the code of the plot showing the convergence of the sample mean in the case of the fair die to plot that the variance converges to the true variance.
 
 # Hypothesis testing
 
@@ -656,6 +758,7 @@ hist(fair_dice_tosses,
      xlab = "Outcome of a fair die toss")
 ```
 
+
 Here comes the tricky part. We want for each of die we want to calculate the number of sixes that were observed.
 ```{r}
 # Create a vector that will store the result
@@ -687,7 +790,7 @@ Maybe our problem is we are being too strict with our rule of decision. Let us c
 (sum(fair_die_number_sixes>25))/1000
 ```
 
-Now sometimes the machine produces dice that are loaded and have a lower probability of landing on a $1$ or $6$ but higher probability of landing on a $5$ or a $2$. We would like our rule to also make us throw those dice away. Let us estimate now what is the probability of not throwing away those dice.
+Now sometimes the machine produces dices that are loaded and have a lower probability of landing on a $1$ or $6$ but higher probability of landing on a $5$ or a $2$. We would like our rule to also make us throw those dice away. Let us estimate now what is the probability of not throwing away those dice.
 
 First let us build a function in R to throw loaded dice.
 ```{r eval = FALSE}
@@ -908,3 +1011,4 @@ We can now go back to our data and check if we will reject the null hypothesis. 
 ```{r eval = FALSE}
 t.test(x = data_normal)
 ```
+
